@@ -1,0 +1,54 @@
+apply plugin:"idea"
+apply plugin:"eclipse"
+apply plugin:"groovy"
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration-test/groovy')
+        }
+        resources.srcDir file('src/integration-test/resources')
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.10'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    compile group: 'commons-io', name: 'commons-io', version: '1.4'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+}
+
+idea {
+    module {
+        downloadJavadoc = false
+        downloadSources = false
+
+        iml.withXml {
+            def node = it.asNode()
+            def content = node.component.find { it.'@name' == 'NewModuleRootManager' }.content[0]
+            content.sourceFolder.each { sourceFolder ->
+                if (sourceFolder.@url?.endsWith('/resources')) {
+                    sourceFolder.attributes().with {
+                        boolean isTestSource = (remove('isTestSource') == 'true')
+                        put('type', isTestSource ? 'java-test-resource' : 'java-resource')
+                    }
+                }
+            }
+        }
+    }
+}
+
+eclipse {
+    classpath {
+        downloadSources=false
+    }
+}
