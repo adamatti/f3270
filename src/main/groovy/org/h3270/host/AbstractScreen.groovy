@@ -21,148 +21,142 @@ package org.h3270.host;
  * MA 02110-1301 USA
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 /**
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: AbstractScreen.java,v 1.11 2006/10/25 11:20:09 spiegel Exp $
  */
-public abstract class AbstractScreen implements Screen {
+abstract class AbstractScreen implements Screen {
 
-    protected final Logger logger = Logger.getLogger(AbstractScreen.class);
+    protected final Logger logger = Logger.getLogger(AbstractScreen.class)
 
-    protected char[][] buffer = null;
+    protected char[][] buffer = null
 
-    protected int width = 0;
-    protected int height = 0;
-    protected int cursorX = 0;
-    protected int cursorY = 0;
+    protected int width = 0
+    protected int height = 0
+    protected int cursorX = 0
+    protected int cursorY = 0
 
-    protected boolean isFormatted = true;
+    protected boolean isFormatted = true
 
-    protected List<Field> fields = new ArrayList<Field>();
+    protected List<Field> fields = new ArrayList<Field>()
 
-    public int getWidth() {
-        return width;
+    int getWidth() {
+        width
     }
 
-    public int getHeight() {
-        return height;
+    int getHeight() {
+        height
     }
 
-    public char charAt(final int x, final int y) {
+    char charAt(final int x, final int y) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
-            throw new IndexOutOfBoundsException("(" + x + ", " + y + ")" + ", should be in (0.." + width + ", 0.."
-                    + height + ")");
+            throw new IndexOutOfBoundsException("(" + x + ", " + y + ")" + ", should be in (0.." + width + ", 0.." + height + ")")
         }
-        final InputField f = getInputFieldAt(x, y);
+        final InputField f = getInputFieldAt(x, y)
         if (f != null) {
-            final String value = f.getValue();
-            return value.charAt(x - f.getStartX());
+            final String value = f.getValue()
+            return value.charAt(x - f.getStartX())
         } else {
-            final char[] line = buffer[y];
+            final char[] line = buffer[y]
             if (x >= line.length) {
-                return ' ';
+                return ' '
             } else {
-                return line[x];
+                return line[x]
             }
         }
     }
 
-    public String substring(final int startx, final int starty, final int endx, final int endy) {
+    String substring(final int startx, final int starty, final int endx, final int endy) {
         if (starty > endy) {
-            return "";
+            return ""
         } else if (starty == endy) {
             if (startx > endx) {
-                return "";
+                return ""
             } else {
-                return this.substring(startx, endx, starty);
+                return this.substring(startx, endx, starty)
             }
         } else {
-            final StringBuffer result = new StringBuffer();
-            result.append(this.substring(startx, width - 1, starty));
+            final StringBuffer result = new StringBuffer()
+            result.append(this.substring(startx, width - 1, starty))
             result.append('\n');
             for (int y = starty + 1; y < endy; y++) {
                 result.append(this.substring(y));
                 result.append('\n');
             }
-            result.append(this.substring(0, endx, endy));
-            return result.toString();
+            result.append(this.substring(0, endx, endy))
+            return result.toString()
         }
     }
 
-    public String substring(final int startx, final int endx, final int y) {
+    String substring(final int startx, final int endx, final int y) {
 
-        String s = null;
+        String s = null
 
         try {
-            s = new String(buffer[y], startx, endx - startx + 1);
+            s = new String(buffer[y], startx, endx - startx + 1)
         } catch (final Exception e) {
-            logger.error("Error parsing substring", e);
+            logger.error("Error parsing substring", e)
         }
-        return s;
+        return s
     }
 
-    public String substring(final int y) {
-        return new String(buffer[y]);
+    String substring(final int y) {
+        return new String(buffer[y])
     }
 
-    public List<Field> getFields() {
-        return Collections.unmodifiableList(fields);
+    List<Field> getFields() {
+        return Collections.unmodifiableList(fields)
     }
 
-    public InputField getInputFieldAt(final int x, final int y) {
+    InputField getInputFieldAt(final int x, final int y) {
         for (final Iterator<Field> i = fields.iterator(); i.hasNext();) {
-            final Field f = i.next();
+            final Field f = i.next()
             if (f instanceof InputField && !f.isEmpty()) {
-                final int startx = f.getStartX();
-                final int starty = f.getStartY();
-                final int endx = f.getEndX();
-                final int endy = f.getEndY();
+                final int startx = f.getStartX()
+                final int starty = f.getStartY()
+                final int endx = f.getEndX()
+                final int endy = f.getEndY()
 
                 if (y < starty) {
-                    continue;
+                    continue
                 }
                 if (y == starty) {
                     if (x < startx) {
-                        continue;
+                        continue
                     }
                     if (y == endy && x > endx) {
-                        continue;
+                        continue
                     }
-                    return (InputField) f;
+                    return f
                 }
                 if (y > endy) {
-                    continue;
+                    continue
                 }
                 if (y == endy) {
                     if (x > endx) {
-                        continue;
+                        continue
                     }
-                    return (InputField) f;
+                    return f
                 } else { // full row between start and end
-                    return (InputField) f;
+                    return f
                 }
             }
         }
-        return null;
+        null
     }
 
-    public boolean isInputField(final int x, final int y) {
-        return getInputFieldAt(x, y) != null;
+    boolean isInputField(final int x, final int y) {
+        getInputFieldAt(x, y) != null
     }
 
-    public InputField getFocusedField() {
-        return this.getInputFieldAt(cursorX, cursorY);
+    InputField getFocusedField() {
+        this.getInputFieldAt(cursorX, cursorY)
     }
 
-    public boolean isFormatted() {
-        return isFormatted;
+    boolean isFormatted() {
+        isFormatted
     }
 
 }

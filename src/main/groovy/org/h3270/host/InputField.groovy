@@ -1,4 +1,4 @@
-package org.h3270.host;
+package org.h3270.host
 
 /*
  * Copyright (C) 2004-2006 akquinet framework solutions
@@ -21,8 +21,8 @@ package org.h3270.host;
  * MA 02110-1301 USA
  */
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * Represents a Field that allows user input.
@@ -30,13 +30,13 @@ import java.util.regex.Pattern;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: InputField.java,v 1.10 2006/10/25 11:20:09 spiegel Exp $
  */
-public class InputField extends Field {
+class InputField extends Field {
 
     private boolean isNumeric;
     private boolean isFocused;
     private boolean changed;
 
-    public InputField(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,
+    InputField(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,
             final int endy, final int color, final int extHighlight) {
         super(screen, fieldCode, startx, starty, endx, endy, color, extHighlight);
         if ((fieldCode & ATTR_NUMERIC) != 0) {
@@ -44,54 +44,53 @@ public class InputField extends Field {
         }
     }
 
-    public InputField(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,
-            final int endy) {
+    InputField(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,final int endy) {
         this(screen, fieldCode, startx, starty, endx, endy, ATTR_COL_DEFAULT, ATTR_EH_DEFAULT);
     }
 
-    public boolean isNumeric() {
-        return this.isNumeric;
+    boolean isNumeric() {
+        this.isNumeric
     }
 
-    public void setFocused(final boolean flag) {
-        this.isFocused = flag;
+    void setFocused(final boolean flag) {
+        this.isFocused = flag
     }
 
-    public boolean isFocused() {
-        return this.isFocused;
+    boolean isFocused() {
+        this.isFocused
     }
 
-    public boolean isChanged() {
-        return this.changed;
+    boolean isChanged() {
+        return this.changed
     }
     
     @Override
-    public boolean isWritable() {
-        return true;
+    boolean isWritable() {
+        true
     }
 
     /**
      * Sets the value of this Field. This method does not work for multiline fields; use setValue(int, String) instead.
      */
-    public void setValue(final String newValue) {
+    void setValue(final String newValue) {
         if (this.isMultiline()) {
             throw new RuntimeException("use setValue(int, String) for multiline field");
         }
         if (this.value == null) {
-            getValue();
+            getValue()
         }
-        if (!newValue.equals(trim(this.value))) {
-            final int width = endx - startx + 1;
+        if (newValue != trim(this.value)) {
+            final int width = endx - startx + 1
             if (newValue.length() > width) {
-                this.value = newValue.substring(0, width);
+                this.value = newValue.substring(0, width)
             } else {
-                this.value = newValue;
+                this.value = newValue
             }
-            changed = true;
+            changed = true
         }
     }
 
-    private static final Pattern LINE_PATTERN = Pattern.compile(".*\n", Pattern.MULTILINE);
+    private static final Pattern LINE_PATTERN = Pattern.compile(".*\n", Pattern.MULTILINE)
 
     /**
      * Sets the value of one of the lines in a multi-line field.
@@ -101,26 +100,26 @@ public class InputField extends Field {
      * @param newValue
      *            The new value for this line. It is not supposed to have a trailing newline.
      */
-    public void setValue(final int lineNumber, final String newValue) {
+    void setValue(final int lineNumber, final String newValue) {
         if (this.value == null) {
-            getValue();
+            getValue()
         }
-        final StringBuffer result = new StringBuffer();
-        final Matcher m = LINE_PATTERN.matcher(this.value);
+        final StringBuffer result = new StringBuffer()
+        final Matcher m = LINE_PATTERN.matcher(this.value)
         for (int i = 0; i < lineNumber; i++) {
-            m.find();
-            result.append(m.group(0));
+            m.find()
+            result.append(m.group(0))
         }
-        result.append(trim(newValue));
+        result.append(trim(newValue))
         if (lineNumber < getHeight() - 1) {
-            result.append("\n");
-            m.find();
+            result.append("\n")
+            m.find()
             result.append(this.value.substring(m.end()));
         }
-        final String val = result.toString();
-        if (!val.equals(this.value)) {
-            this.value = val;
-            changed = true;
+        final String val = result.toString()
+        if (val != this.value) {
+            this.value = val
+            changed = true
         }
     }
 

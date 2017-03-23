@@ -1,4 +1,4 @@
-package org.h3270.host;
+package org.h3270.host
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions
@@ -21,8 +21,6 @@ package org.h3270.host;
  * MA 02110-1301 USA
  */
 
-import java.util.List;
-
 /**
  * Represents the contents of a 3270 screen. A screen is made up of characters arranged in rows and columns. Some
  * portions of the screen are fields that allow user input. These are represented by objects of their own (see class
@@ -32,23 +30,23 @@ import java.util.List;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: Screen.java,v 1.7 2006/10/25 11:20:09 spiegel Exp $
  */
-public interface Screen {
+interface Screen {
 
     /**
      * Returns the width (number of columns) of this screen.
      */
-    int getWidth();
+    int getWidth()
 
     /**
      * Returns the height (number of rows) of this screen.
      */
-    int getHeight();
+    int getHeight()
 
     /**
      * Returns the character at the given position. x and y start in the upper left hand corner, which is position
      * (0,0). Control characters are returned as blanks.
      */
-    char charAt(int x, int y);
+    char charAt(int x, int y)
 
     /**
      * Returns the contents of a region on this screen.
@@ -63,7 +61,7 @@ public interface Screen {
      *            y coordinate of the end point
      * @return the region as a String, with line breaks (newline characters) inserted
      */
-    String substring(int startx, int starty, int endx, int endy);
+    String substring(int startx, int starty, int endx, int endy)
 
     /**
      * Returns a part of a row on this screen, as a string.
@@ -75,7 +73,7 @@ public interface Screen {
      * @param y
      *            number of the row
      */
-    String substring(int startx, int endx, int y);
+    String substring(int startx, int endx, int y)
 
     /**
      * Returns a single row of this screen.
@@ -84,13 +82,12 @@ public interface Screen {
      *            the row number
      * @return the row as a String, without a terminating newline
      */
-    String substring(int y);
+    String substring(int y)
 
     /**
      * Returns a list of all Fields on this screen. If there are no fields, this method returns an empty list.
      */
-    List<Field> getFields();
-
+    List<Field> getFields()
     /**
      * Returns a Field object representing the input field at position (x,y). If there is no input field at this
      * position, this method returns null. A field begins with the character <i>after</i> the first control character,
@@ -99,22 +96,22 @@ public interface Screen {
      * 
      * x and y start in the upper left hand corner, which is position (0,0).
      */
-    InputField getInputFieldAt(int x, int y);
+    InputField getInputFieldAt(int x, int y)
 
     /**
      * Returns true if there is an input field at position (x, y) on this screen. Fields do not include the control
      * characters that delimit them, see {@link #getInputFieldAt getFieldAt()}.
      */
-    boolean isInputField(int x, int y);
+    boolean isInputField(int x, int y)
 
     /**
      * Gets the InputField in which the cursor is currently, or null if the cursor is not in an InputField.
      */
-    InputField getFocusedField();
+    InputField getFocusedField()
 
     /**
      * Returns true if this Screen is formatted.
      */
-    boolean isFormatted();
+    boolean isFormatted()
 
 }

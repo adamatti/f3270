@@ -19,7 +19,7 @@
  * MA 02110-1301 USA
  */
 
-package org.h3270.host;
+package org.h3270.host
 
 /**
  * An exception that indicates something went wrong in the S3270 subprocess. Subclasses represent more concrete failure
@@ -28,12 +28,8 @@ package org.h3270.host;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: S3270Exception.java,v 1.1 2007/02/19 15:40:50 spiegel Exp $
  */
-public class S3270Exception extends RuntimeException {
-
-    private static final long serialVersionUID = 2941839322531181864L;
-
-    public S3270Exception(final String message) {
-        super(message);
+class S3270Exception extends RuntimeException {
+    S3270Exception(final String message) {
+        super(message)
     }
-
 }

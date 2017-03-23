@@ -19,7 +19,7 @@
  * MA 02110-1301 USA
  */
 
-package org.h3270.host;
+package org.h3270.host
 
 /**
  * Indicates that the host could not be reached by the s3270 process. This is most likely due to firewall problems.
@@ -27,31 +27,29 @@ package org.h3270.host;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: HostUnreachableException.java,v 1.2 2007/03/02 09:35:23 spiegel Exp $
  */
-public class HostUnreachableException extends S3270Exception {
+class HostUnreachableException extends S3270Exception {
 
-    private static final long serialVersionUID = 3815053284627149828L;
+    private String host
+    private String reason
 
-    private String host;
-    private String reason;
-
-    public HostUnreachableException(final String host, final String reason) {
+    HostUnreachableException(final String host, final String reason) {
         super("Host " + host + " cannot be reached: " + reason);
-        this.host = host;
-        this.reason = reason;
+        this.host = host
+        this.reason = reason
     }
 
     /**
      * Returns the name of the host that could not be reached.
      */
-    public String getHost() {
-        return host;
+    String getHost() {
+        host
     }
 
     /**
      * Returns the reason why the host could not be reached, as reported by s3270.
      */
-    public String getReason() {
-        return reason;
+    String getReason() {
+        return reason
     }
 
 }

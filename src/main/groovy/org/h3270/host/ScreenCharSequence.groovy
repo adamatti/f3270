@@ -1,4 +1,4 @@
-package org.h3270.host;
+package org.h3270.host
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions
@@ -21,13 +21,13 @@ package org.h3270.host;
  * MA 02110-1301 USA
  */
 
-import org.h3270.render.TextRenderer;
+import org.h3270.render.TextRenderer
 
 /**
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: ScreenCharSequence.java,v 1.6 2006/10/25 11:20:09 spiegel Exp $
  */
-public class ScreenCharSequence {
+class ScreenCharSequence {
 
     private Screen screen = null;
     private String text = null;
@@ -36,40 +36,38 @@ public class ScreenCharSequence {
 
     private TextRenderer renderer = new TextRenderer();
 
-    public ScreenCharSequence(final Screen s) {
+    ScreenCharSequence(final Screen s) {
         screen = s;
         width = screen.getWidth();
         // height = screen.getHeight();
         text = renderer.render(s);
     }
 
-    public int length() {
-        return text.length();
+    int length() {
+        text.length()
     }
 
-    public char charAt(final int index) {
-        return text.charAt(index);
+    char charAt(final int index) {
+        text.charAt(index)
     }
 
-    public String subSequence(final int start, final int end) {
-        return text.substring(start, end);
+    String subSequence(final int start, final int end) {
+         text.substring(start, end)
     }
 
-    public String toString() {
-        return text;
+     String toString() {
+         text
     }
 
-    public Field getFieldAt(final int index) {
+    Field getFieldAt(final int index) {
         if (index < 0 || index >= length()) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException()
         }
-        final int y = index / (width + 1);
-        final int x = index % (width + 1);
+        final int y = index / (width + 1)
+        final int x = index % (width + 1)
         if (x == width) {
-            return null;
-        } else {
-            return screen.getInputFieldAt(x, y);
+            return null
         }
+        return screen.getInputFieldAt(x, y)
     }
-
 }

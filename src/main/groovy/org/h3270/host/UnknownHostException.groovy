@@ -19,7 +19,7 @@
  * MA 02110-1301 USA
  */
 
-package org.h3270.host;
+package org.h3270.host
 
 /**
  * Indicates that the name of the mainframe host could not be resolved. This is most likely due to a typing error in the
@@ -28,22 +28,19 @@ package org.h3270.host;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: UnknownHostException.java,v 1.2 2007/03/02 09:35:44 spiegel Exp $
  */
-public class UnknownHostException extends S3270Exception {
+class UnknownHostException extends S3270Exception {
+    private String host
 
-    private static final long serialVersionUID = -4523691701264020588L;
-
-    private String host;
-
-    public UnknownHostException(final String host) {
-        super(host + " is unknown");
-        this.host = host;
+    UnknownHostException(final String host) {
+        super(host + " is unknown")
+        this.host = host
     }
 
     /**
      * Returns the name of the host that could not be resolved.
      */
-    public String getHost() {
-        return host;
+    String getHost() {
+        host
     }
 
 }

@@ -379,21 +379,21 @@ class S3270 {
      * Updates the screen object with s3270's buffer data.
      */
     void updateScreen() {
-        assertConnected();
+        assertConnected()
         while (true) {
-            final Result r = doCommand("readbuffer ascii");
+            final Result r = doCommand("readbuffer ascii")
             if (r.getData().size() > 0) {
-                final String firstLine = (String) r.getData().get(0);
+                final String firstLine = (String) r.getData().get(0)
                 if (firstLine.startsWith("data: Keyboard locked")) {
-                    continue;
+                    continue
                 }
             }
             screen.update(r.getStatus(), r.getData());
-            break;
+            break
         }
     }
 
-    public Screen getScreen() {
+    Screen getScreen() {
         assertConnected();
         return screen;
     }
@@ -401,120 +401,117 @@ class S3270 {
     /**
      * Writes all changed fields back to s3270.
      */
-    public void submitScreen() {
-        assertConnected();
-        for (final Iterator<Field> i = screen.getFields().iterator(); i.hasNext();) {
-            final Field f = i.next();
+    void submitScreen() {
+        assertConnected()
+        screen.fields.each {Field f ->
             if ((f instanceof InputField) && ((InputField) f).isChanged()) {
-                doCommand("movecursor (" + f.getStartY() + ", " + f.getStartX() + ")");
-                doCommand("eraseeof");
-                final String value = f.getValue();
+                doCommand("movecursor (" + f.getStartY() + ", " + f.getStartX() + ")")
+                doCommand("eraseeof")
+                final String value = f.getValue()
                 for (int j = 0; j < value.length(); j++) {
-                    final char ch = value.charAt(j);
+                    final char ch = value.charAt(j)
                     if (ch == '\n') {
-                        doCommand("newline");
-                    } else if (!Integer.toHexString(ch).equals("0")) {
-                        doCommand("key (0x" + Integer.toHexString(ch) + ")");
+                        doCommand("newline")
+                    } else if (!Integer.toHexString(ch) == "0") {
+                        doCommand("key (0x" + Integer.toHexString(ch) + ")")
                     }
                 }
             }
         }
     }
 
-    public void submitUnformatted(final String data) {
-        assertConnected();
-        int index = 0;
+    void submitUnformatted(final String data) {
+        assertConnected()
+        int index = 0
         for (int y = 0; y < screen.getHeight() && index < data.length(); y++) {
             for (int x = 0; x < screen.getWidth() && index < data.length(); x++) {
-                final char newCh = data.charAt(index);
+                final char newCh = data.charAt(index)
                 if (newCh != screen.charAt(x, y)) {
-                    doCommand("movecursor (" + y + ", " + x + ")");
+                    doCommand("movecursor (" + y + ", " + x + ")")
                     if (!Integer.toHexString(newCh).equals("0")) {
-                        doCommand("key (0x" + Integer.toHexString(newCh) + ")");
+                        doCommand("key (0x" + Integer.toHexString(newCh) + ")")
                     }
                 }
-                index++;
+                index++
             }
-            index++; // skip newline
+            index++ // skip newline
         }
     }
 
     // s3270 actions below this line
 
-    public void clear() {
-        doCommand("clear");
+    void clear() {
+        doCommand("clear")
     }
 
-    public void enter() {
-        doCommand("enter");
-        waitFormat();
+    void enter() {
+        doCommand("enter")
+        waitFormat()
     }
 
-    public void tab() {
-        doCommand("tab");
+    void tab() {
+        doCommand("tab")
     }
 
-    public void newline() {
-        doCommand("newline");
-        waitFormat();
+    void newline() {
+        doCommand("newline")
+        waitFormat()
     }
 
-    public void eraseEOF() {
-        doCommand("eraseEOF");
+    void eraseEOF() {
+        doCommand("eraseEOF")
     }
 
-    public void pa(final int number) {
-        doCommand("pa(" + number + ")");
-        waitFormat();
+    void pa(final int number) {
+        doCommand("pa(" + number + ")")
+        waitFormat()
     }
 
-    public void pf(final int number) {
-        doCommand("pf(" + number + ")");
-        waitFormat();
+    void pf(final int number) {
+        doCommand("pf(" + number + ")")
+        waitFormat()
     }
 
-    public void reset() {
-        doCommand("reset");
+    void reset() {
+        doCommand("reset")
     }
 
-    public void sysReq() {
-        doCommand("sysReq");
+    void sysReq() {
+        doCommand("sysReq")
     }
 
-    public void attn() {
-        doCommand("attn");
+    void attn() {
+        doCommand("attn")
     }
 
     private static final Pattern FUNCTION_KEY_PATTERN = Pattern.compile("p(f|a)([0-9]{1,2})");
 
     @SuppressWarnings("unchecked")
-    public void doKey(final String key) {
-        assertConnected();
-        final Matcher m = FUNCTION_KEY_PATTERN.matcher(key);
+    void doKey(final String key) {
+        assertConnected()
+        final Matcher m = FUNCTION_KEY_PATTERN.matcher(key)
         if (m.matches()) { // function key
-            final int number = Integer.parseInt(m.group(2));
-            if (m.group(1).equals("f")) {
-                this.pf(number);
+            final int number = Integer.parseInt(m.group(2))
+            if (m.group(1) == "f") {
+                this.pf(number)
             } else {
-                this.pa(number);
+                this.pa(number)
             }
-        } else if (key.equals("")) {
+        } else if (key == "") {
             // use ENTER as a default action if the actual key got lost
-            this.enter();
+            this.enter()
         } else { // other key: find a parameterless method of the same name
             try {
-                final Class c = this.getClass();
-                final Method method = c.getMethod(key, []);
-                method.invoke(this, []);
+                final Class c = this.getClass()
+                final Method method = c.getMethod(key, [])
+                method.invoke(this, [])
             } catch (final NoSuchMethodException ex) {
-                throw new IllegalArgumentException("no such key: " + key);
+                throw new IllegalArgumentException("no such key: " + key)
             } catch (final IllegalAccessException ex) {
-                throw new RuntimeException("illegal s3270 method access for key: " + key);
+                throw new RuntimeException("illegal s3270 method access for key: " + key)
             } catch (final InvocationTargetException ex) {
-                throw new RuntimeException("error invoking s3270 for key: " + key + ", exception: "
-                        + ex.getTargetException());
+                throw new RuntimeException("error invoking s3270 for key: " + key + ", exception: " + ex.getTargetException())
             }
         }
     }
-
 }
