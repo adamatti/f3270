@@ -52,3 +52,5 @@ eclipse {
         downloadSources=false
     }
 }
+
+task allClasses(dependsOn: ['classes', 'integrationTestClasses'])
