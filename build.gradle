@@ -19,7 +19,8 @@ repositories {
 
 dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.10'
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+    runtime group: 'log4j', name: 'log4j', version: '1.2.17'
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
     compile group: 'commons-io', name: 'commons-io', version: '1.4'
 

@@ -2,8 +2,8 @@ package net.sf.f3270
 
 class Parameter {
 
-    private String name;
-    private String value;
+    private String name
+    private String value
 
     Parameter(final String name, final String value) {
         this.name = name
@@ -33,7 +33,6 @@ class Parameter {
         value
     }
 
-    @Override
     String toString() {
         name + "=" + value
     }

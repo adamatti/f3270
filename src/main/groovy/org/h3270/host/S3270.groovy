@@ -1,4 +1,6 @@
-package org.h3270.host;
+package org.h3270.host
+
+import groovy.util.logging.Slf4j
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions
@@ -22,12 +24,10 @@ package org.h3270.host;
  */
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * A Terminal that connects to the host via s3270.
@@ -35,63 +35,62 @@ import org.apache.log4j.Logger;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: S3270.java,v 1.26 2007/03/02 09:37:34 spiegel Exp $
  */
+@Slf4j("logger")
 class S3270 {
 
     enum TerminalMode {
-        MODE_80_24(2), MODE_80_32(3), MODE_80_43(4), MODE_132_27(5);
-        private int mode;
+        MODE_80_24(2), MODE_80_32(3), MODE_80_43(4), MODE_132_27(5)
+        private int mode
 
         private TerminalMode(int mode) {
-            this.mode = mode;
+            this.mode = mode
         }
 
         int getMode() {
-            return mode;
+            mode
         }
     }
 
-    public enum TerminalType {
-        TYPE_3278("3278"), TYPE_3279("3279");
-        private String type;
+    enum TerminalType {
+        TYPE_3278("3278"), TYPE_3279("3279")
+        private String type
 
         private TerminalType(String type) {
-            this.type = type;
+            this.type = type
         }
 
-        public String getType() {
-            return type;
+        String getType() {
+            type
         }
     }
 
-    private static final Logger logger = Logger.getLogger(S3270.class);
+    private final String s3270Path
+    private String hostname
+    private final int port
+    private final TerminalType type
+    private final TerminalMode mode
 
-    private final String s3270Path;
-    private String hostname;
-    private final int port;
-    private final TerminalType type;
-    private final TerminalMode mode;
-
-    private S3270Screen screen = null;
+    private S3270Screen screen = null
 
     /**
      * The subprocess that does the actual communication with the host.
      */
-    private Process s3270 = null;
+    private Process s3270 = null
 
     /**
      * Used to send commands to the s3270 process.
      */
-    private PrintWriter out = null;
+    private PrintWriter out = null
 
     /**
      * Used for reading input from the s3270 process.
      */
-    private BufferedReader in_ = null;
+    private BufferedReader in_ = null
 
     /**
      * A thread that does a blocking read on the error stream from the s3270 process.
      */
-    private ErrorReader errorReader = null;
+    private ErrorReader errorReader = null
 
     /**
      * Constructs a new S3270 object. The s3270 subprocess (which does the communication with the host) is immediately
@@ -108,128 +107,126 @@ class S3270 {
      * @throws org.h3270.host.S3270Exception
      *             for any other error not matched by the above
      */
-    public S3270(final String s3270Path, final String hostname, final int port, final TerminalType type,
-            final TerminalMode mode) {
+    S3270(final String s3270Path, final String hostname, final int port, final TerminalType type, final TerminalMode mode) {
 
-        this.s3270Path = s3270Path;
-        this.hostname = hostname;
-        this.port = port;
-        this.type = type;
-        this.mode = mode;
-        this.screen = new S3270Screen();
+        this.s3270Path = s3270Path
+        this.hostname = hostname
+        this.port = port
+        this.type = type
+        this.mode = mode
+        this.screen = new S3270Screen()
 
-        checkS3270PathValid(s3270Path);
+        checkS3270PathValid(s3270Path)
 
-        final String commandLine = String.format("%s -model %s-%d %s:%d", s3270Path, type.getType(), mode.getMode(),
-                hostname, port);
+        final String commandLine = String.format("%s -model %s-%d %s:%d", s3270Path, type.getType(), mode.getMode(),hostname, port)
         try {
-            logger.info("starting " + commandLine);
-            s3270 = Runtime.getRuntime().exec(commandLine);
+            logger.info("starting " + commandLine)
+            s3270 = Runtime.getRuntime().exec(commandLine)
 
-            out = new PrintWriter(new OutputStreamWriter(s3270.getOutputStream(), "ISO-8859-1"));
-            in_ = new BufferedReader(new InputStreamReader(s3270.getInputStream(), "ISO-8859-1"));
-            errorReader = new ErrorReader();
-            errorReader.start();
+            out = new PrintWriter(new OutputStreamWriter(s3270.getOutputStream(), "ISO-8859-1"))
+            in_ = new BufferedReader(new InputStreamReader(s3270.getInputStream(), "ISO-8859-1"))
+            errorReader = new ErrorReader()
+            errorReader.start()
 
-            waitFormat();
+            waitFormat()
         } catch (final IOException ex) {
-            throw new RuntimeException("IO Exception while starting s3270", ex);
+            throw new RuntimeException("IO Exception while starting s3270", ex)
         }
     }
 
     private void checkS3270PathValid(String path) {
         try {
-            Runtime.getRuntime().exec(path + " -v");
+            Runtime.getRuntime().exec(path + " -v")
         } catch (Exception e) {
-            throw new RuntimeException("could not find s3270 executable in the path");
+            throw new RuntimeException("could not find s3270 executable in the path")
         }
     }
 
     private void assertConnected() {
         if (s3270 == null) {
-            throw new RuntimeException("not connected");
+            throw new RuntimeException("not connected")
         }
     }
 
-    public String getS3270Path() {
-        return s3270Path;
+    String getS3270Path() {
+        s3270Path
     }
 
-    public String getHostname() {
-        return hostname;
+    String getHostname() {
+        hostname
     }
 
-    public int getPort() {
-        return port;
+    int getPort() {
+        port
     }
 
-    public TerminalType getType() {
-        return type;
+    TerminalType getType() {
+        type
     }
 
-    public TerminalMode getMode() {
-        return mode;
+    TerminalMode getMode() {
+        mode
     }
 
     /**
      * Represents the result of an s3270 command.
      */
     private class Result {
-        private final List<String> data;
-        private final String status;
+        private final List<String> data
+        private final String status
 
-        public Result(final List<String> data, final String status) {
-            this.data = data;
-            this.status = status;
+        Result(final List<String> data, final String status) {
+            this.data = data
+            this.status = status
         }
 
-        public List<String> getData() {
-            return data;
+        List<String> getData() {
+            data
         }
 
-        public String getStatus() {
-            return status;
+        String getStatus() {
+            status
         }
     }
 
     /**
      * Perform an s3270 command. All communication with s3270 should go via this method.
      */
-    public Result doCommand(final String command) {
-        assertConnected();
+    Result doCommand(final String command) {
+        assertConnected()
         try {
-            out.println(command);
-            out.flush();
+            out.println(command)
+            out.flush()
             if (logger.isDebugEnabled()) {
-                logger.debug("---> " + command);
+                logger.debug("---> " + command)
             }
 
-            final List<String> lines = new ArrayList<String>();
+            final List<String> lines = new ArrayList<String>()
             while (true) {
-                final String line = in.readLine();
+                final String line = in_.readLine()
                 if (line == null) {
                     checkS3270Process(); // will throw appropriate exception
                     // if we get here, it's a more obscure error
-                    throw new RuntimeException("s3270 process not responding");
+                    throw new RuntimeException("s3270 process not responding")
                 }
 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("<--- " + line);
+                    logger.debug("<--- " + line)
                 }
 
-                if (line.equals("ok")) {
-                    break;
+                if (line == "ok") {
+                    break
                 }
-                lines.add(line);
+                lines.add(line)
             }
-            final int size = lines.size();
+            final int size = lines.size()
             if (size > 0) {
-                return new Result(lines.subList(0, size - 1), (String) lines.get(size - 1));
+                return new Result(lines.subList(0, size - 1), (String) lines.get(size - 1))
             } else {
-                throw new RuntimeException("no status received in command: " + command);
+                throw new RuntimeException("no status received in command: " + command)
             }
         } catch (final IOException ex) {
-            throw new RuntimeException("IOException during command: " + command, ex);
+            throw new RuntimeException("IOException during command: " + command, ex)
         }
     }
 
@@ -239,17 +236,17 @@ class S3270 {
      * <code>message</code> for later retrieval.
      */
     private class ErrorReader extends Thread {
-        private String message = null;
+        private String message = null
 
-        public void run() {
+        void run() {
             final BufferedReader err = new BufferedReader(new InputStreamReader(s3270.getErrorStream()));
             try {
                 while (true) {
-                    final String msg = err.readLine();
+                    final String msg = err.readLine()
                     if (msg == null) {
-                        break;
+                        break
                     }
-                    message = msg;
+                    message = msg
                 }
             } catch (final IOException ex) {
                 // ignore
@@ -260,10 +257,10 @@ class S3270 {
     private static final Pattern unknownHostPattern = Pattern.compile(
     // This message is hard-coded in s3270 as of version 3.3.5,
             // so we can rely on it not being localized.
-            "Unknown host: (.*)");
+            "Unknown host: (.*)")
     private static final Pattern unreachablePattern = Pattern.compile(
     // This is the hard-coded part of the error message in s3270 version 3.3.5.
-            "Connect to ([^,]+), port ([0-9]+): (.*)");
+            "Connect to ([^,]+), port ([0-9]+): (.*)")
 
     /**
      * Checks whether the s3270 process is still running, and if it isn't, tries to determine the cause why it failed.
@@ -275,29 +272,27 @@ class S3270 {
         // second-rate approach: wait a little while, and then check if
         // the process is already terminated.
         try {
-            Thread.sleep(100);
-        } catch (final InterruptedException ex) {
-        }
+            Thread.sleep(100)
+        } catch (final InterruptedException ex) {}
         try {
-            final int exitValue = s3270.exitValue();
-            final String message = errorReader.message;
+            final int exitValue = s3270.exitValue()
+            final String message = errorReader.message
             if (exitValue == 1 && message != null) {
-                Matcher m = unknownHostPattern.matcher(message);
+                Matcher m = unknownHostPattern.matcher(message)
                 if (m.matches()) {
-                    throw new UnknownHostException(m.group(1));
+                    throw new UnknownHostException(m.group(1))
                 } else {
-                    m = unreachablePattern.matcher(message);
+                    m = unreachablePattern.matcher(message)
                     if (m.matches()) {
-                        throw new HostUnreachableException(m.group(1), m.group(3));
+                        throw new HostUnreachableException(m.group(1), m.group(3))
                     }
                 }
-                throw new S3270Exception("s3270 terminated with code " + exitValue + ", message: "
-                        + errorReader.message);
+                throw new S3270Exception("s3270 terminated with code " + exitValue + ", message: " + errorReader.message)
             }
         } catch (final IllegalThreadStateException ex) {
             // we get here if the process has still been running in the
             // call to s3270.exitValue() above
-            throw new S3270Exception("s3270 not terminated, error: " + errorReader.message);
+            throw new S3270Exception("s3270 not terminated, error: " + errorReader.message)
         }
     }
 
@@ -306,43 +301,42 @@ class S3270 {
      */
     private void waitFormat() {
         for (int i = 0; i < 50; i++) {
-            final Result r = doCommand("");
+            final Result r = doCommand("")
             if (r.getStatus().startsWith("U F")) {
-                return;
+                return
             }
             try {
-                Thread.sleep(100);
-            } catch (final InterruptedException ex) {
-            }
+                Thread.sleep(100)
+            } catch (final InterruptedException ex) {}
         }
     }
 
-    public void disconnect() {
-        assertConnected();
-        out.println("quit");
-        out.flush();
+    void disconnect() {
+        assertConnected()
+        out.println("quit")
+        out.flush()
 
         new Thread(new Runnable() {
-            public void run() {
+            void run() {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(1000)
                     if (s3270 != null) {
-                        s3270.destroy();
+                        s3270.destroy()
                     }
                 } catch (final InterruptedException ex) {
                     if (s3270 != null) {
-                        s3270.destroy();
+                        s3270.destroy()
                     }
                 }
             }
-        }).start();
+        }).start()
 
         try {
-            s3270.waitFor();
+            s3270.waitFor()
         } catch (final InterruptedException ex) { /* ignore */
         }
         try {
-            in.close();
+            in_.close()
         } catch (final IOException ex) { /* ignore */
         }
         out.close()
@@ -355,24 +349,24 @@ class S3270 {
         if (s3270 == null || in_ == null || out == null) {
             return false
         } else {
-            final Result r = doCommand("");
+            final Result r = doCommand("")
             if (r.getStatus().matches(". . . C.*")) {
                 return true;
             } else {
-                out.println("quit");
-                out.flush();
-                s3270.destroy();
-                s3270 = null;
-                in_ = null;
-                out = null;
-                return false;
+                out.println("quit")
+                out.flush()
+                s3270.destroy()
+                s3270 = null
+                in_ = null
+                out = null
+                return false
             }
         }
     }
 
     void dumpScreen(final String filename) {
-        assertConnected();
-        screen.dump(filename);
+        assertConnected()
+        screen.dump(filename)
     }
 
     /**
@@ -388,14 +382,14 @@ class S3270 {
                     continue
                 }
             }
-            screen.update(r.getStatus(), r.getData());
+            screen.update(r.getStatus(), r.getData())
             break
         }
     }
 
     Screen getScreen() {
-        assertConnected();
-        return screen;
+        assertConnected()
+        screen
     }
 
     /**

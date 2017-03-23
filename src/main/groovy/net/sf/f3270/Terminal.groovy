@@ -11,8 +11,8 @@ import org.h3270.render.TextRenderer
 class Terminal {
     private static final int SCREEN_WIDTH_IN_CHARS = 80
 
-    private S3270 s3270;
-    private final Collection<TerminalObserver> observers = new ArrayList<TerminalObserver>();
+    private S3270 s3270
+    private final Collection<TerminalObserver> observers = new ArrayList<TerminalObserver>()
 
     private final String s3270Path
     private final String hostname

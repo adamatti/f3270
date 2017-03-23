@@ -1,4 +1,6 @@
-package org.h3270.host;
+package org.h3270.host
+
+import org.slf4j.Logger;
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions
@@ -21,15 +23,16 @@ package org.h3270.host;
  * MA 02110-1301 USA
  */
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory
 
 /**
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: AbstractScreen.java,v 1.11 2006/10/25 11:20:09 spiegel Exp $
  */
+
 abstract class AbstractScreen implements Screen {
 
-    protected final Logger logger = Logger.getLogger(AbstractScreen.class)
+    protected final Logger logger = LoggerFactory.getLogger(this.class)
 
     protected char[][] buffer = null
 
@@ -80,10 +83,10 @@ abstract class AbstractScreen implements Screen {
         } else {
             final StringBuffer result = new StringBuffer()
             result.append(this.substring(startx, width - 1, starty))
-            result.append('\n');
+            result.append('\n')
             for (int y = starty + 1; y < endy; y++) {
-                result.append(this.substring(y));
-                result.append('\n');
+                result.append(this.substring(y))
+                result.append('\n')
             }
             result.append(this.substring(0, endx, endy))
             return result.toString()

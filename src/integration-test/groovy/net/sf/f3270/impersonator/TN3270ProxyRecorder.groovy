@@ -1,12 +1,11 @@
 package net.sf.f3270.impersonator
 
+import groovy.util.logging.Slf4j
 import net.sf.f3270.impersonator.DataByte.Direction
 import org.apache.commons.io.FileUtils
-import org.apache.log4j.Logger
 
+@Slf4j
 class TN3270ProxyRecorder {
-
-    Logger log = Logger.getLogger(TN3270ProxyRecorder.class)
 
     private Socket clientSocket
     private Socket serverSocket

@@ -33,7 +33,6 @@ class TerminalWindowIde {
     }
 
     private void createFrame(final String title) {
-
         JPanel mainPane = new JPanel()
         BoxLayout boxLayout = new BoxLayout(mainPane, BoxLayout.Y_AXIS)
         mainPane.setLayout(boxLayout)

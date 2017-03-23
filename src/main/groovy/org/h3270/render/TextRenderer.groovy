@@ -21,11 +21,9 @@ package org.h3270.render;
  * MA 02110-1301 USA
  */
 
-import java.util.Iterator;
-
-import org.h3270.host.Field;
-import org.h3270.host.InputField;
-import org.h3270.host.Screen;
+import org.h3270.host.Field
+import org.h3270.host.InputField
+import org.h3270.host.Screen
 
 /**
  * @author Andre Spiegel spiegel@gnu.org
@@ -33,16 +31,13 @@ import org.h3270.host.Screen;
  */
 class TextRenderer implements Renderer {
 
-    private boolean markIntensified = false;
+    private boolean markIntensified = false
 
-    // private boolean markHidden = false;
-
-    TextRenderer() {
-    }
+    TextRenderer() {}
 
     TextRenderer(final boolean markIntensified, final boolean markHidden) {
-        this.markIntensified = markIntensified;
-        // this.markHidden = markHidden;
+        this.markIntensified = markIntensified
+        // this.markHidden = markHidden
     }
 
     boolean canRender(final Screen s) {
@@ -73,14 +68,14 @@ class TextRenderer implements Renderer {
                 boolean checkField(final Field f) {
                     !(f instanceof InputField) && f.isIntensified()
                 }
-            });
+            })
         }
 
         markFields(s, result, '{', '}', new FieldSelector() {
             boolean checkField(final Field f) {
                 f instanceof InputField
             }
-        });
+        })
 
         for (int i = 0; i < result.length(); i++) {
             if (result.charAt(i) == '\u0000') {

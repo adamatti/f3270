@@ -1,4 +1,4 @@
-package net.sf.f3270;
+package net.sf.f3270
 
 import net.sf.f3270.impersonator.TN3270Impersonator
 import net.sf.f3270.impersonator.TN3270ProxyRecorder

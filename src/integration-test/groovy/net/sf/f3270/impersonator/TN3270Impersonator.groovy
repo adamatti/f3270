@@ -1,11 +1,10 @@
 package net.sf.f3270.impersonator
 
+import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
-import org.apache.log4j.Logger
 
+@Slf4j
 class TN3270Impersonator {
-
-    Logger log = Logger.getLogger(TN3270Impersonator.class)
 
     static void main(String[] args) {
         new TN3270Impersonator(1111, "net/sf/f3270/impersonator/data.txt")
