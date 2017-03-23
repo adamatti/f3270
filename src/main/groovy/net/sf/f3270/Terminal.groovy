@@ -210,7 +210,7 @@ public class Terminal {
      * @deprecated Use {@link @link Terminal#read (FieldIdentifier)} instead
      */
     // TODO : delete method (deprecated on 2010-04-15)
-    public String read(final String label) {
+    String read(final String label) {
         return read(new FieldIdentifier(label));
     }
 
@@ -218,7 +218,7 @@ public class Terminal {
      * @deprecated Use {@link @link Terminal#read (FieldIdentifier)} instead
      */
     // TODO : delete method (deprecated on 2010-04-15)
-    public String read(final String label, final int skip) {
+    String read(final String label, final int skip) {
         return read(new FieldIdentifier(label, skip));
     }
 
@@ -226,7 +226,7 @@ public class Terminal {
      * @deprecated Use {@link @link Terminal#read (FieldIdentifier)} instead
      */
     // TODO : delete method (deprecated on 2010-04-15)
-    public String read(final String label, final MatchMode matchMode) {
+    String read(final String label, final MatchMode matchMode) {
         return read(new FieldIdentifier(label, matchMode));
     }
 
@@ -234,7 +234,7 @@ public class Terminal {
      * @deprecated Use {@link @link Terminal#read (FieldIdentifier)} instead
      */
     // TODO : delete method (deprecated on 2010-04-15)
-    public String read(final String label, final int skip, final MatchMode matchMode) {
+    String read(final String label, final int skip, final MatchMode matchMode) {
         return read(new FieldIdentifier(label, skip, matchMode));
     }
 
@@ -242,11 +242,11 @@ public class Terminal {
      * @deprecated Use {@link @link Terminal#read (FieldIdentifier)} instead
      */
     // TODO : delete method (deprecated on 2010-04-15)
-    public String read(final String label, final int skip, final int matchNumber, final MatchMode matchMode) {
+    String read(final String label, final int skip, final int matchNumber, final MatchMode matchMode) {
         return read(new FieldIdentifier(label, skip, matchNumber, matchMode));
     }
 
-    public String read(FieldIdentifier fieldIdentifier) {
+    String read(FieldIdentifier fieldIdentifier) {
         assertConnected();
         Field field = getField(fieldIdentifier);
         String value = read(field);
@@ -268,7 +268,7 @@ public class Terminal {
         return (InputField) field;
     }
 
-    private String read(Field field) {
+    String read(Field field) {
         return replaceNulls(field.getValue()).trim();
     }
 
@@ -292,16 +292,16 @@ public class Terminal {
      * @deprecated Use {@link @link Terminal#getField (FieldIdentifier)} instead
      */
     // TODO : delete method (deprecated on 2010-04-15)
-    public Field fieldAfterLabel(String label) {
-        return getField(new FieldIdentifier(label));
+    Field fieldAfterLabel(String label) {
+        getField(new FieldIdentifier(label));
     }
 
     /**
      * @deprecated Use {@link @link Terminal#getField (FieldIdentifier)} instead
      */
     // TODO : delete method (deprecated on 2010-04-15)
-    public Field fieldAfterLabel(String label, int skip) {
-        return getField(new FieldIdentifier(label, skip));
+    Field fieldAfterLabel(String label, int skip) {
+        getField(new FieldIdentifier(label, skip));
     }
 
     /**

@@ -124,19 +124,17 @@ public class InputField extends Field {
         }
     }
 
-    private static final Pattern TRIM_PATTERN = Pattern.compile("^[\\x00 _]*(.*?)[\\x00 _]*$", 0);
+    private static final Pattern TRIM_PATTERN = Pattern.compile('^[\\x00 _]*(.*?)[\\x00 _]*$', 0)
 
     /**
      * Returns a string that is the same as the argument, with leading and trailing ASCII NUL characters, blanks and
      * underscores removed.
      */
-    public static String trim(final String value) {
+    static String trim(final String value) {
         final Matcher m = TRIM_PATTERN.matcher(value);
         if (m.matches()) {
             return m.group(1).replace((char) 0, ' ');
-        } else {
-            return value;
         }
+        value
     }
-
 }

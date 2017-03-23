@@ -1,36 +1,36 @@
-package net.sf.f3270.ide;
+package net.sf.f3270.ide
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.FlowLayout
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
+import java.awt.Insets
+import java.awt.Toolkit
 
-import javax.swing.AbstractListModel;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
+import javax.swing.AbstractListModel
+import javax.swing.BorderFactory
+import javax.swing.BoxLayout
+import javax.swing.JButton
+import javax.swing.JComboBox
+import javax.swing.JFrame
+import javax.swing.JLabel
+import javax.swing.JList
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTextField
+import javax.swing.ListCellRenderer
+import javax.swing.ListModel
+import javax.swing.ListSelectionModel
+import javax.swing.SwingUtilities
+import javax.swing.UIManager
+import javax.swing.border.LineBorder
 
-import net.sf.f3270.Parameter;
+import net.sf.f3270.Parameter
 
-public class Ide {
+class Ide {
 
     private JFrame jFrame = null;
     private JPanel jContentPane = null;
@@ -57,9 +57,9 @@ public class Ide {
     private JComboBox comboBoxMatch = null;
     private JScrollPane scrollPaneListCommands = null;
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+            void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (final Exception e) {
@@ -148,7 +148,7 @@ public class Ide {
 
     private ListCellRenderer getCommandsCellRenderer() {
         return new ListCellRenderer() {
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+            Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
                     boolean cellHasFocus) {
                 Command command = (Command) list.getModel().getElementAt(index);
                 return command.toPanel(list, isSelected);
@@ -161,11 +161,11 @@ public class Ide {
         return new AbstractListModel() {
             // private static List<Command> commands = new ArrayList<Command>();
 
-            public int getSize() {
+            int getSize() {
                 return 20;
             }
 
-            public Object getElementAt(int i) {
+            Object getElementAt(int i) {
                 return new Command("write", new Parameter("label", "whatever"), new Parameter("value", "something"));
             }
         };
@@ -198,13 +198,16 @@ public class Ide {
     private JComboBox getComboBoxCommand() {
         if (comboBoxCommand == null) {
             comboBoxCommand = new JComboBox();
-            comboBoxCommand.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Write", "Verify", "Enter",
-                    "PF", "PA", "SysReq", "Clear"}));
+            comboBoxCommand.setModel(
+                new javax.swing.DefaultComboBoxModel([
+                    "Write", "Verify", "Enter",
+                    "PF", "PA", "SysReq", "Clear"
+            ]))
             comboBoxCommand.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent e) {
+                void actionPerformed(java.awt.event.ActionEvent e) {
                     comboBoxCommandActionPerformed(e);
                 }
-            });
+            })
         }
         return comboBoxCommand;
     }
@@ -273,10 +276,11 @@ public class Ide {
     private JComboBox getComboBoxN() {
         if (comboBoxN == null) {
             comboBoxN = new JComboBox();
-            comboBoxN
-                    .setModel(new javax.swing.DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7",
-                            "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
-                            "23", "24"}));
+            comboBoxN.setModel(
+                new javax.swing.DefaultComboBoxModel(["1", "2", "3", "4", "5", "6", "7",
+                    "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+                    "23", "24"
+                ]))
         }
         return comboBoxN;
     }
@@ -409,8 +413,11 @@ public class Ide {
     private JComboBox getComboBoxMode() {
         if (comboBoxMode == null) {
             comboBoxMode = new JComboBox();
-            comboBoxMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Exact", "Exact (trim)", "Regex",
-                    "Contains"}));
+            comboBoxMode.setModel(
+                new javax.swing.DefaultComboBoxModel([
+                    "Exact", "Exact (trim)", "Regex", "Contains"
+                ])
+            )
         }
         return comboBoxMode;
     }
@@ -424,25 +431,28 @@ public class Ide {
 
     private JComboBox getComboBoxAssert() {
         if (comboBoxAssert == null) {
-            comboBoxAssert = new JComboBox();
-            comboBoxAssert.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"Equals", "Contains",
-                    "Not contains"}));
+            comboBoxAssert = new JComboBox()
+            comboBoxAssert.setModel(
+                new javax.swing.DefaultComboBoxModel([
+                    "Equals", "Contains","Not contains"
+                ])
+            )
         }
-        return comboBoxAssert;
+        comboBoxAssert
     }
 
     private JComboBox getComboBoxSkip() {
         if (comboBoxSkip == null) {
-            comboBoxSkip = new JComboBox();
+            comboBoxSkip = new JComboBox()
         }
-        return comboBoxSkip;
+        comboBoxSkip
     }
 
     private JComboBox getComboBoxMatch() {
         if (comboBoxMatch == null) {
-            comboBoxMatch = new JComboBox();
+            comboBoxMatch = new JComboBox()
         }
-        return comboBoxMatch;
+        comboBoxMatch
     }
 
 }

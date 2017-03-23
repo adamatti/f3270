@@ -6,10 +6,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Rectangle;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.awt.Rectangle
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -33,7 +30,7 @@ import org.h3270.host.Field;
 import org.h3270.host.InputField;
 import org.h3270.host.S3270;
 
-public class TerminalWindow {
+class TerminalWindow {
 	
 	private S3270 s3270;
 	private int currentWidth;
@@ -53,9 +50,9 @@ public class TerminalWindow {
 			12);
 	private final Font sansFont = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
 
-	private Color[] extendedColors = new Color[] { Color.cyan, Color.blue,
+	private Color[] extendedColors = [Color.cyan, Color.blue,
 			Color.red, Color.pink, Color.green, Color.magenta, Color.yellow,
-			new Color(198, 198, 198) };
+			new Color(198, 198, 198) ]
 
 	private Map<String, Style> stylesFlyweight = new HashMap<String, Style>();
 
@@ -67,17 +64,17 @@ public class TerminalWindow {
 	private JTable fieldsTable;
 	private JTabbedPane tabbedPane;
 
-	public TerminalWindow(final S3270 s3270) {
+	TerminalWindow(final S3270 s3270) {
 		this.s3270 = s3270;
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (final Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException(e)
 		}
 
-		initializeStyles();
-		createFrame(s3270.getHostname());
+		initializeStyles()
+		createFrame(s3270.getHostname())
 	}
 
 	private void initializeStyles() {
@@ -289,13 +286,13 @@ public class TerminalWindow {
 	private JScrollPane buildFieldsTablePanel() {
 		fieldsTable = new JTable(new AbstractTableModel() {
 			private static final long serialVersionUID = 5347188337180793036L;
-			private String[] columnNames = new String[] { "Id", "Type", "Value" };
+			private String[] columnNames = [ "Id", "Type", "Value" ]
 
-			public int getColumnCount() {
+			int getColumnCount() {
 				return 3;
 			}
 
-			public int getRowCount() {
+			int getRowCount() {
 				try {
 					return s3270.getScreen().getFields().size();
 				} catch (Exception e) {
@@ -304,11 +301,11 @@ public class TerminalWindow {
 			}
 
 			@Override
-			public String getColumnName(final int column) {
+			String getColumnName(final int column) {
 				return columnNames[column];
 			}
 
-			public Object getValueAt(final int rowIndex, final int columnIndex) {
+			Object getValueAt(final int rowIndex, final int columnIndex) {
 				if (columnIndex == 0) {
 					return rowIndex;
 				}

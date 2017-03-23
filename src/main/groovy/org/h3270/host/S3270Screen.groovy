@@ -21,18 +21,8 @@ package org.h3270.host;
  * MA 02110-1301 USA
  */
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * An implementation of the Screen interface that is fed by the output of s3270.
@@ -40,21 +30,21 @@ import java.util.regex.Pattern;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: S3270Screen.java,v 1.21 2006/10/25 11:20:09 spiegel Exp $
  */
-public class S3270Screen extends AbstractScreen {
+class S3270Screen extends AbstractScreen {
 
     private List<String> bufferData = null;
     private String status = null;
 
-    public S3270Screen() {
+    S3270Screen() {
         width = 0;
         height = 0;
         buffer = null;
         isFormatted = true;
     }
 
-    public S3270Screen(final InputStream in) {
+    S3270Screen(final InputStream in_) {
         try {
-            final BufferedReader input = new BufferedReader(new InputStreamReader(in, "ISO-8859-1"));
+            final BufferedReader input = new BufferedReader(new InputStreamReader(in_, "ISO-8859-1"));
             final List<String> lines = new ArrayList<String>();
             String status = null;
             while (true) {
@@ -88,8 +78,8 @@ public class S3270Screen extends AbstractScreen {
             + "([0-9]+) " // Cursor Row
             + "([0-9]+) " // Cursor Column
             + "0x0 " // Window ID (always 0x0)
-            + "(?:[0-9.]+|-)$" // Time for last command
-    );
+            + '(?:[0-9.]+|-)$' // Time for last command
+    )
 
     /**
      * Updates this screen with output from "readbuffer ascii".
@@ -99,7 +89,7 @@ public class S3270Screen extends AbstractScreen {
      * @param bufferData
      *            the actual screen data, as a list of strings
      */
-    public void update(final String status, final List<String> bufferData) {
+    void update(final String status, final List<String> bufferData) {
         this.status = status;
         if (status.charAt(2) == 'F') {
             isFormatted = true;

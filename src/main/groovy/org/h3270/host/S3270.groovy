@@ -21,16 +21,9 @@ package org.h3270.host;
  * MA 02110-1301 USA
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,9 +35,9 @@ import org.apache.log4j.Logger;
  * @author Andre Spiegel spiegel@gnu.org
  * @version $Id: S3270.java,v 1.26 2007/03/02 09:37:34 spiegel Exp $
  */
-public class S3270 {
+class S3270 {
 
-    public enum TerminalMode {
+    enum TerminalMode {
         MODE_80_24(2), MODE_80_32(3), MODE_80_43(4), MODE_132_27(5);
         private int mode;
 
@@ -52,7 +45,7 @@ public class S3270 {
             this.mode = mode;
         }
 
-        public int getMode() {
+        int getMode() {
             return mode;
         }
     }
@@ -93,7 +86,7 @@ public class S3270 {
     /**
      * Used for reading input from the s3270 process.
      */
-    private BufferedReader in = null;
+    private BufferedReader in_ = null;
 
     /**
      * A thread that does a blocking read on the error stream from the s3270 process.
@@ -134,7 +127,7 @@ public class S3270 {
             s3270 = Runtime.getRuntime().exec(commandLine);
 
             out = new PrintWriter(new OutputStreamWriter(s3270.getOutputStream(), "ISO-8859-1"));
-            in = new BufferedReader(new InputStreamReader(s3270.getInputStream(), "ISO-8859-1"));
+            in_ = new BufferedReader(new InputStreamReader(s3270.getInputStream(), "ISO-8859-1"));
             errorReader = new ErrorReader();
             errorReader.start();
 
@@ -352,15 +345,15 @@ public class S3270 {
             in.close();
         } catch (final IOException ex) { /* ignore */
         }
-        out.close();
-        in = null;
-        out = null;
-        s3270 = null;
+        out.close()
+        in_ = null
+        out = null
+        s3270 = null
     }
 
-    public boolean isConnected() {
-        if (s3270 == null || in == null || out == null) {
-            return false;
+    boolean isConnected() {
+        if (s3270 == null || in_ == null || out == null) {
+            return false
         } else {
             final Result r = doCommand("");
             if (r.getStatus().matches(". . . C.*")) {
@@ -370,14 +363,14 @@ public class S3270 {
                 out.flush();
                 s3270.destroy();
                 s3270 = null;
-                in = null;
+                in_ = null;
                 out = null;
                 return false;
             }
         }
     }
 
-    public void dumpScreen(final String filename) {
+    void dumpScreen(final String filename) {
         assertConnected();
         screen.dump(filename);
     }
@@ -385,7 +378,7 @@ public class S3270 {
     /**
      * Updates the screen object with s3270's buffer data.
      */
-    public void updateScreen() {
+    void updateScreen() {
         assertConnected();
         while (true) {
             final Result r = doCommand("readbuffer ascii");
@@ -511,8 +504,8 @@ public class S3270 {
         } else { // other key: find a parameterless method of the same name
             try {
                 final Class c = this.getClass();
-                final Method method = c.getMethod(key, new Class[] {});
-                method.invoke(this, new Object[] {});
+                final Method method = c.getMethod(key, []);
+                method.invoke(this, []);
             } catch (final NoSuchMethodException ex) {
                 throw new IllegalArgumentException("no such key: " + key);
             } catch (final IllegalAccessException ex) {
