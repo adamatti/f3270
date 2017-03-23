@@ -63,11 +63,7 @@ class Ide {
     static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             void run() {
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-                } catch (final Exception e) {
-                    throw new RuntimeException(e)
-                }
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
                 Ide application = new Ide()
                 application.getJFrame().setVisible(true)
             }
@@ -86,8 +82,14 @@ class Ide {
             Dimension screenSize = tk.getScreenSize()
             int screenHeight = screenSize.height
             int screenWidth = screenSize.width
-            jFrame.setSize(screenWidth / 3, screenHeight * 3 / 5)
-            jFrame.setLocation((screenWidth - jFrame.getWidth()) / 2, (screenHeight - jFrame.getHeight()) / 2)
+            jFrame.setSize(
+                screenWidth / 3 as int,
+                screenHeight * 3 / 5 as int
+            )
+            jFrame.setLocation(
+                (screenWidth - jFrame.getWidth()) / 2 as int,
+                (screenHeight - jFrame.getHeight()) / 2 as int
+            )
 
             comboBoxCommand.setSelectedIndex(0)
         }
@@ -201,7 +203,8 @@ class Ide {
                 new DefaultComboBoxModel([
                     "Write", "Verify", "Enter",
                     "PF", "PA", "SysReq", "Clear"
-            ]))
+                ] as String[]
+            ))
             comboBoxCommand.addActionListener(new ActionListener() {
                 void actionPerformed(ActionEvent e) {
                     comboBoxCommandActionPerformed(e)
@@ -279,7 +282,8 @@ class Ide {
                 new DefaultComboBoxModel(["1", "2", "3", "4", "5", "6", "7",
                     "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
                     "23", "24"
-                ]))
+                ] as String[]
+            ))
         }
         comboBoxN
     }
@@ -414,7 +418,7 @@ class Ide {
             comboBoxMode.setModel(
                 new DefaultComboBoxModel([
                     "Exact", "Exact (trim)", "Regex", "Contains"
-                ])
+                ] as String[])
             )
         }
         comboBoxMode
@@ -433,7 +437,7 @@ class Ide {
             comboBoxAssert.setModel(
                 new DefaultComboBoxModel([
                     "Equals", "Contains","Not contains"
-                ])
+                ] as String[])
             )
         }
         comboBoxAssert

@@ -5,7 +5,7 @@ import org.apache.log4j.Logger
 
 class TN3270Impersonator {
 
-    Logger log = Logger.getLogger(TN3270Impersonator.class);
+    Logger log = Logger.getLogger(TN3270Impersonator.class)
 
     static void main(String[] args) {
         new TN3270Impersonator(1111, "net/sf/f3270/impersonator/data.txt")
@@ -15,9 +15,9 @@ class TN3270Impersonator {
     private final int port
 
     TN3270Impersonator(int port, String dataFilePath) {
-        this.port = port;
-        parseDataFile(dataFilePath);
-        startMainThread();
+        this.port = port
+        parseDataFile(dataFilePath)
+        startMainThread()
     }
 
     private void startMainThread() {
@@ -57,10 +57,10 @@ class TN3270Impersonator {
                     }
 
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException(e)
                 }
 
-                log.info("no more recorded data to replay");
+                log.info("no more recorded data to replay")
 
                 while (true) {
                     try {
@@ -123,12 +123,11 @@ class TN3270Impersonator {
         a
     }
 
-    @SuppressWarnings("unchecked")
     private List<String> readLines(String dataFilePath) {
         try {
-            return IOUtils.readLines(TN3270Impersonator.class.getClassLoader().getResourceAsStream(dataFilePath));
+            return IOUtils.readLines(TN3270Impersonator.class.getClassLoader().getResourceAsStream(dataFilePath))
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e)
         }
     }
 
