@@ -169,16 +169,16 @@ showTerminalWindow: ${showTerminalWindow}
     }
 
     void type(final String text) {
-        assertConnected();
-        InputField field = s3270.getScreen().getFocusedField();
-        field.setValue(text);
-        commandIssued("type", null, new Parameter("text", text));
+        assertConnected()
+        InputField field = s3270.getScreen().getFocusedField()
+        field.setValue(text)
+        commandIssued("type", null, new Parameter("text", text))
     }
 
     void clearScreen() {
-        assertConnected();
-        s3270.eraseEOF();
-        updateScreen();
+        assertConnected()
+        s3270.eraseEOF()
+        updateScreen()
         commandIssued("clearScreen", null)
     }
 */

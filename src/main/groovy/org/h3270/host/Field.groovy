@@ -1,4 +1,4 @@
-package org.h3270.host;
+package org.h3270.host
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions
@@ -77,7 +77,7 @@ class Field {
     /**
      * Value of the color extended attribute for this field
      */
-    private int extendedColor = ATTR_COL_DEFAULT;
+    private int extendedColor = ATTR_COL_DEFAULT
 
     Field(
         final Screen screen,
@@ -108,7 +108,7 @@ class Field {
     }
 
     Field(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,final int endy) {
-        this(screen, fieldCode, startx, starty, endx, endy, ATTR_COL_DEFAULT, ATTR_EH_DEFAULT);
+        this(screen, fieldCode, startx, starty, endx, endy, ATTR_COL_DEFAULT, ATTR_EH_DEFAULT)
     }
 
     /**
@@ -192,7 +192,7 @@ class Field {
      *            the number of the line to retrieve, starting at zero
      */
     static String getValue(final String value, final int lineNumber) {
-        final StringTokenizer st = new StringTokenizer(value, "\n");
+        final StringTokenizer st = new StringTokenizer(value, "\n")
 
         int row = 0
 
@@ -211,7 +211,7 @@ class Field {
      * the screen.
      */
     String getText() {
-        final StringBuffer result = new StringBuffer();
+        final StringBuffer result = new StringBuffer()
         if (startx == 0) {
             if (starty > 0) {
                 result.append(" \n")

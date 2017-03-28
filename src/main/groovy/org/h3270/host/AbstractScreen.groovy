@@ -1,6 +1,6 @@
 package org.h3270.host
 
-import org.slf4j.Logger;
+import org.slf4j.Logger
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions

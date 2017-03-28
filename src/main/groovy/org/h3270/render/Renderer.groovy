@@ -1,4 +1,4 @@
-package org.h3270.render;
+package org.h3270.render
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions

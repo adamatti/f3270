@@ -1,4 +1,4 @@
-package net.sf.f3270;
+package net.sf.f3270s
 
 enum MatchMode {
     EXACT,

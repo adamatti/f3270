@@ -54,7 +54,7 @@ class TerminalWindow {
 		Color.magenta, Color.yellow, new Color(198, 198, 198)
 	]
 
-	private Map<String, Style> stylesFlyweight = new HashMap<String, Style>();
+	private Map<String, Style> stylesFlyweight = new HashMap<String, Style>()
 
 	private JFrame frame
 	private JTextPane textPane3270
@@ -259,7 +259,7 @@ class TerminalWindow {
 	}
 
 	private boolean updateTextPane3270Size() {
-		final FontMetrics fontMetricsMonospaced = textPane3270.getFontMetrics(monospacedFont);
+		final FontMetrics fontMetricsMonospaced = textPane3270.getFontMetrics(monospacedFont)
 		int w = s3270.screen.width
 		int h = s3270.screen.height
 		if (w != currentWidth || h != currentHeight) {
@@ -328,7 +328,7 @@ class TerminalWindow {
 		fieldsTable.columnModel.getColumn(0).setPreferredWidth(25)
 		fieldsTable.columnModel.getColumn(1).setPreferredWidth(35)
 		fieldsTable.columnModel.getColumn(2).setPreferredWidth(600)
-		// fieldsTable.setAutoCreateRowSorter(true);
+		// fieldsTable.setAutoCreateRowSorter(true)
 
 		final JScrollPane tableScroller = new JScrollPane(fieldsTable)
 		tableScroller

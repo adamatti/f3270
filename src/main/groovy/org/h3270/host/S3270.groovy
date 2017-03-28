@@ -368,20 +368,20 @@ class S3270 {
     boolean isConnected() {
         if (s3270 == null || in_ == null || out == null) {
             return false
-        } else {
-            final Result r = doCommand("")
-            if (r.getStatus().matches(". . . C.*")) {
-                return true;
-            } else {
-                out.println("quit")
-                out.flush()
-                s3270.destroy()
-                s3270 = null
-                in_ = null
-                out = null
-                return false
-            }
         }
+
+        final Result r = doCommand("")
+        if (r.getStatus().matches(". . . C.*")) {
+            return true
+        }
+
+        out.println("quit")
+        out.flush()
+        s3270.destroy()
+        s3270 = null
+        in_ = null
+        out = null
+        false
     }
 
     void dumpScreen(final String filename) {
@@ -504,7 +504,7 @@ class S3270 {
         doCommand("attn")
     }
 
-    private static final Pattern FUNCTION_KEY_PATTERN = Pattern.compile("p(f|a)([0-9]{1,2})");
+    private static final Pattern FUNCTION_KEY_PATTERN = Pattern.compile("p(f|a)([0-9]{1,2})")
 
     @SuppressWarnings("unchecked")
     void doKey(final String key) {

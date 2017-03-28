@@ -73,7 +73,7 @@ abstract class IntegrationTestBase {
 
     protected final void disconnect() {
         if (recorder != null) {
-            recorder.dump();
+            recorder.dump()
         }
     }
 

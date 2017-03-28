@@ -29,18 +29,18 @@ import org.h3270.render.TextRenderer
  */
 class ScreenCharSequence {
 
-    private Screen screen = null;
-    private String text = null;
-    private int width = 0;
-    // private int height = 0;
+    private Screen screen = null
+    private String text = null
+    private int width = 0
+    // private int height = 0
 
-    private TextRenderer renderer = new TextRenderer();
+    private TextRenderer renderer = new TextRenderer()
 
     ScreenCharSequence(final Screen s) {
-        screen = s;
-        width = screen.getWidth();
-        // height = screen.getHeight();
-        text = renderer.render(s);
+        screen = s
+        width = screen.width
+        // height = screen.getHeight()
+        text = renderer.render(s)
     }
 
     int length() {

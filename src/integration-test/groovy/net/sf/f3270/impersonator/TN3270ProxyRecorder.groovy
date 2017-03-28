@@ -78,7 +78,7 @@ class TN3270ProxyRecorder {
         for (DataByte d : data) {
             if (previous == null || previous.direction != d.direction) {
                 sb.append("\n")
-                sb.append(d.direction == Direction.CLIENT_TO_SERVER ? ">" : "<");
+                sb.append(d.direction == Direction.CLIENT_TO_SERVER ? ">" : "<")
             }
             sb.append(" " + d.data)
             previous = d
@@ -86,7 +86,7 @@ class TN3270ProxyRecorder {
         sb.deleteCharAt(0)
 
         try {
-            FileUtils.writeStringToFile(new File(path), sb.toString());
+            FileUtils.writeStringToFile(new File(path), sb.toString())
         } catch (IOException e) {
             throw new RuntimeException(e)
         }

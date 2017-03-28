@@ -1,4 +1,4 @@
-package net.sf.f3270.impersonator;
+package net.sf.f3270.impersonator
 
 class DataByte {
 

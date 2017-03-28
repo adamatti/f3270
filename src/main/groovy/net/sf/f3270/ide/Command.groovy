@@ -22,28 +22,28 @@ class Command {
     }
 
     final JPanel toPanel(JList list, boolean isSelected) {
-        FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
-        layout.setHgap(0)
-        layout.setVgap(3)
-        JPanel panel = new JPanel(layout);
+        FlowLayout layout = new FlowLayout(FlowLayout.LEFT)
+        layout.hgap = 0
+        layout.vgap = 3
+        JPanel panel = new JPanel(layout)
 
-        panel.setBackground(list.getBackground());
+        panel.background = list.background
 
         if (isSelected) {
-            panel.setBorder(new LineBorder(Color.gray));
+            panel.border = new LineBorder(Color.gray)
         } else {
-            panel.setBorder(new LineBorder(list.getBackground()));
+            panel.border = new LineBorder(list.background)
         }
-        panel.setOpaque(true)
+        panel.opaque = true
 
         addLabel(panel, " ", Color.white)
         addLabel(panel, command, Color.black)
         addLabel(panel, "(", Color.gray)
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i]
-            addLabel(panel, parameter.getName(), new Color(128, 0, 0));
+            addLabel(panel, parameter.name, new Color(128, 0, 0))
             addLabel(panel, "=", Color.gray)
-            addLabel(panel, parameter.getValue(), Color.blue);
+            addLabel(panel, parameter.value, Color.blue)
             if (i != parameters.length - 1) {
                 addLabel(panel, ", ", Color.gray)
             }

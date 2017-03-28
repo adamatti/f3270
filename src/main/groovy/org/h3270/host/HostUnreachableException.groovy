@@ -33,7 +33,7 @@ class HostUnreachableException extends S3270Exception {
     private String reason
 
     HostUnreachableException(final String host, final String reason) {
-        super("Host " + host + " cannot be reached: " + reason);
+        super("Host ${host} cannot be reached: ${reason}")
         this.host = host
         this.reason = reason
     }

@@ -53,7 +53,7 @@ class InputField extends Field {
     }
 /*
     InputField(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,final int endy) {
-        this(screen, fieldCode, startx, starty, endx, endy, ATTR_COL_DEFAULT, ATTR_EH_DEFAULT);
+        this(screen, fieldCode, startx, starty, endx, endy, ATTR_COL_DEFAULT, ATTR_EH_DEFAULT)
     }
 
     boolean isNumeric() {
@@ -121,7 +121,7 @@ class InputField extends Field {
         if (lineNumber < getHeight() - 1) {
             result.append("\n")
             m.find()
-            result.append(this.value.substring(m.end()));
+            result.append(this.value.substring(m.end()))
         }
         final String val = result.toString()
         if (val != this.value) {
