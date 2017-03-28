@@ -61,7 +61,7 @@ class Field {
     protected int endx
     protected int endy
 
-    protected String value
+    protected String value_
 
     public static final int DISPLAY_NORMAL = 0
     public static final int DISPLAY_INTENSIFIED = 1
@@ -79,8 +79,16 @@ class Field {
      */
     private int extendedColor = ATTR_COL_DEFAULT;
 
-    Field(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,
-            final int endy, final int extendedColor, final int extendedHighlight) {
+    Field(
+        final Screen screen,
+        final byte fieldCode,
+        final int startx,
+        final int starty,
+        final int endx,
+        final int endy,
+        final int extendedColor,
+        final int extendedHighlight
+    ) {
         this.screen = screen
         this.startx = startx
         this.starty = starty
@@ -132,7 +140,7 @@ class Field {
      * top.
      */
     int getEndY() {
-        return endy
+        endy
     }
 
     /**
@@ -142,7 +150,7 @@ class Field {
      * @deprecated this method will disappear soon
      */
     int getWidth() {
-        return endx - startx + 1
+        endx - startx + 1
     }
 
     /**
@@ -167,10 +175,10 @@ class Field {
      * separated by newlines.
      */
     String getValue() {
-        if (value == null) {
-            value = screen.substring(startx, starty, endx, endy)
+        if (value_ == null) {
+            value_ = screen.substring(startx, starty, endx, endy)
         }
-        return value
+        value_
     }
 
     String getValue(final int lineNumber) {
@@ -193,7 +201,7 @@ class Field {
         while (row++ != lineNumber) {
             line = st.nextToken()
         }
-        return line
+        line
     }
 
     /**
@@ -249,7 +257,7 @@ class Field {
     }
 
     boolean isHidden() {
-        return displayMode == DISPLAY_HIDDEN
+        displayMode == DISPLAY_HIDDEN
     }
     
     boolean isWritable() {

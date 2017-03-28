@@ -1,7 +1,6 @@
 package net.sf.f3270
 
 class Parameter {
-
     private String name
     private String value
 

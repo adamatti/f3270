@@ -1,4 +1,4 @@
-package org.h3270.host;
+package org.h3270.host
 
 /*
  * Copyright (C) 2003-2006 akquinet framework solutions
@@ -32,35 +32,35 @@ import java.util.regex.Pattern
  */
 class S3270Screen extends AbstractScreen {
 
-    private List<String> bufferData = null;
-    private String status = null;
+    private List<String> bufferData = null
+    private String status = null
 
     S3270Screen() {
-        width = 0;
-        height = 0;
-        buffer = null;
-        isFormatted = true;
+        width = 0
+        height = 0
+        buffer = null
+        isFormatted = true
     }
 
     S3270Screen(final InputStream in_) {
         try {
-            final BufferedReader input = new BufferedReader(new InputStreamReader(in_, "ISO-8859-1"));
-            final List<String> lines = new ArrayList<String>();
-            String status = null;
+            final BufferedReader input = new BufferedReader(new InputStreamReader(in_, "ISO-8859-1"))
+            final List<String> lines = new ArrayList<String>()
+            String status = null
             while (true) {
-                final String line = input.readLine();
+                final String line = input.readLine()
                 if (line == null) {
-                    break;
+                    break
                 }
                 if (line.startsWith("data:")) {
-                    lines.add(line);
+                    lines.add(line)
                 } else if (Pattern.matches("[ULE] [UF] [UC] .*", line)) {
-                    status = line;
+                    status = line
                 }
             }
-            update(status, lines);
+            update(status, lines)
         } catch (final IOException ex) {
-            throw new RuntimeException("error: " + ex);
+            throw new RuntimeException("error: " + ex)
         }
     }
 
@@ -90,179 +90,208 @@ class S3270Screen extends AbstractScreen {
      *            the actual screen data, as a list of strings
      */
     void update(final String status, final List<String> bufferData) {
-        this.status = status;
+        this.status = status
         if (status.charAt(2) == 'F') {
-            isFormatted = true;
-            updateBuffer(bufferData);
+            isFormatted = true
+            updateBuffer(bufferData)
         } else {
-            isFormatted = false;
-            updateBuffer(bufferData);
+            isFormatted = false
+            updateBuffer(bufferData)
         }
-        final Matcher m = statusPattern.matcher(status);
+        final Matcher m = statusPattern.matcher(status)
         if (m.find()) {
-            cursorX = Integer.parseInt(m.group(2));
-            cursorY = Integer.parseInt(m.group(1));
-            final InputField f = getInputFieldAt(cursorX, cursorY);
+            cursorX = Integer.parseInt(m.group(2))
+            cursorY = Integer.parseInt(m.group(1))
+            final InputField f = getInputFieldAt(cursorX, cursorY)
             if (f != null) {
-                f.setFocused(true);
+                f.setFocused(true)
             }
         } else {
-            cursorX = 0;
-            cursorY = 0;
+            cursorX = 0
+            cursorY = 0
         }
     }
 
     private void updateBuffer(final List<String> bufferData) {
-        this.bufferData = new ArrayList<String>(bufferData);
-        height = bufferData.size();
-        width = 0;
-        buffer = new char[height][];
-        fields = new ArrayList<Field>();
-        fieldStartX = 0;
-        fieldStartY = 0;
-        fieldStartCode = (byte) 0xe0;
+        this.bufferData = new ArrayList<String>(bufferData)
+        height = bufferData.size()
+        width = 0
+        buffer = new char[height][]
+        fields = new ArrayList<Field>()
+        fieldStartX = 0
+        fieldStartY = 0
+        fieldStartCode = (byte) 0xe0
 
         for (int y = 0; y < height; y++) {
-            final char[] line = decode((String) bufferData.get(y), y, fields);
+            final char[] line = decode((String) bufferData.get(y), y, fields)
             if (line.length > width) {
-                width = line.length;
+                width = line.length
             }
-            buffer[y] = line;
+            buffer[y] = line
         }
         // add the final field on the page
-        fields.add(createField(fieldStartCode, fieldStartX, fieldStartY, width - 1, height - 1, color, ext_highlight));
+        fields.add(
+            createField(
+                fieldStartCode,
+                fieldStartX,
+                fieldStartY,
+                width - 1,
+                height - 1,
+                color,
+                ext_highlight
+            )
+        )
     }
-
-    public List<String> getBufferData() {
-        return Collections.unmodifiableList(bufferData);
+/*
+    List<String> getBufferData() {
+        Collections.unmodifiableList(bufferData)
     }
-
-    public void dump(final String filename) {
+*/
+    void dump(final String filename) {
         try {
-            final PrintWriter out = new PrintWriter(new FileWriter(filename));
+            final PrintWriter out = new PrintWriter(new FileWriter(filename))
             for (final Iterator<String> i = bufferData.iterator(); i.hasNext();) {
-                out.println(i.next());
+                out.println(i.next())
             }
-            out.println(status);
-            out.println("ok");
-            out.close();
+            out.println(status)
+            out.println("ok")
+            out.close()
         } catch (final IOException ex) {
-            throw new RuntimeException("error: " + ex);
+            throw new RuntimeException("error: " + ex)
         }
     }
 
     private static final Pattern FORMATTED_CHAR_PATTERN = Pattern
-            .compile("SF\\((..)=(..)(,(..)=(..)(,(..)=(..))?)?\\)|[0-9a-fA-F]{2}");
+            .compile("SF\\((..)=(..)(,(..)=(..)(,(..)=(..))?)?\\)|[0-9a-fA-F]{2}")
 
-    private int fieldStartX = 0;
-    private int fieldStartY = 0;
-    private byte fieldStartCode = (byte) 0xe0;
+    private int fieldStartX = 0
+    private int fieldStartY = 0
+    private byte fieldStartCode = (byte) 0xe0
 
-    private int color = Field.ATTR_COL_DEFAULT;
-    private int ext_highlight = Field.ATTR_EH_DEFAULT;
+    private int color = Field.ATTR_COL_DEFAULT
+    private int ext_highlight = Field.ATTR_EH_DEFAULT
 
     /**
      * Decodes a single line from the raw screen buffer dump.
      */
+    List<Field> getFields() {
+        super.getFields()
+    }
+
     private char[] decode(String line, final int y, final List<Field> fields) {
 
-        int fieldEndX = 0;
-        int fieldEndY = 0;
-        int i;
-        int auxStartcode = -1;
-        int auxColor;
-        int auxExthighlight;
-        String auxCode;
+        int fieldEndX = 0
+        int fieldEndY = 0
+        int i
+        int auxStartcode = -1
+        int auxColor
+        int auxExthighlight
+        String auxCode
 
         if (line.startsWith("data: ")) {
-            line = line.substring(6);
+            line = line.substring(6)
         }
 
-        final StringBuffer result = new StringBuffer();
-        int index = 0;
+        final StringBuffer result = new StringBuffer()
+        int index = 0
 
         // workaround! delete all extended attributes in a line!
         // must have, until h3270 supports extended attributes
-        line = line.replaceAll("SA\\(..=..\\)", "");
+        line = line.replaceAll("SA\\(..=..\\)", "")
 
-        final Matcher m = FORMATTED_CHAR_PATTERN.matcher(line);
+        final Matcher m = FORMATTED_CHAR_PATTERN.matcher(line)
 
         while (m.find()) {
-            final String code = m.group();
+            final String code = m.group()
             if (code.startsWith("SF")) {
 
                 if (!isFormatted) {
-                    throw new RuntimeException("format information in unformatted screen");
+                    throw new RuntimeException("format information in unformatted screen")
                 }
-                result.append(' ');
-                i = 1;
-                auxColor = -1;
-                auxExthighlight = -1;
+                result.append(' ')
+                i = 1
+                auxColor = -1
+                auxExthighlight = -1
 
                 while (i <= m.groupCount()) {
-                    auxCode = m.group(i);
+                    auxCode = m.group(i)
                     if (auxCode == null) {
-                        break;
+                        break
                     }
 
-                    if (auxCode.equals("c0")) {
+                    if (auxCode == "c0") {
                         if (fieldStartX != -1) {
                             // if we've been in an open field, close it now
-                            fieldEndX = index - 1;
-                            fieldEndY = y;
+                            fieldEndX = index - 1
+                            fieldEndY = y
                             if (fieldEndX == -1) {
-                                fieldEndX = width - 1;
-                                fieldEndY--;
+                                fieldEndX = width - 1
+                                fieldEndY--
                             }
                         }
-                        auxStartcode = i + 1;
-                    } else if (auxCode.equals("41")) {
-                        auxExthighlight = i + 1;
-                    } else if (auxCode.equals("42")) {
-                        auxColor = i + 1;
+                        auxStartcode = i + 1
+                    } else if (auxCode == "41") {
+                        auxExthighlight = i + 1
+                    } else if (auxCode == "42") {
+                        auxColor = i + 1
                     }
-                    i = i + 3;
+                    i = i + 3
                 }
 
                 if (i > 1) {
                     if (fieldStartX != -1) {
-                        fields.add(createField(fieldStartCode, fieldStartX, fieldStartY, fieldEndX, fieldEndY, color,
-                                ext_highlight));
+                        fields.add(createField(fieldStartCode, fieldStartX, fieldStartY, fieldEndX, fieldEndY, color, ext_highlight))
                     }
-                    fieldStartX = index + 1;
-                    fieldStartY = y;
-                    fieldStartCode = (byte) Integer.parseInt(m.group(auxStartcode), 16);
+                    fieldStartX = index + 1
+                    fieldStartY = y
+                    fieldStartCode = (byte) Integer.parseInt(m.group(auxStartcode), 16)
                     if (auxExthighlight != -1) {
-                        ext_highlight = Integer.parseInt(m.group(auxExthighlight), 16);
+                        ext_highlight = Integer.parseInt(m.group(auxExthighlight), 16)
                     } else {
-                        ext_highlight = Field.ATTR_EH_DEFAULT;
+                        ext_highlight = Field.ATTR_EH_DEFAULT
                     }
                     if (auxColor != -1) {
-                        color = Integer.parseInt(m.group(auxColor), 16);
+                        color = Integer.parseInt(m.group(auxColor), 16)
                     } else {
-                        color = Field.ATTR_COL_DEFAULT;
+                        color = Field.ATTR_COL_DEFAULT
                     }
                 }
             } else {
-                result.append((char) (Integer.parseInt(code, 16)));
+                result.append((char) (Integer.parseInt(code, 16)))
             }
-            index++;
+            index++
         }
         // a field that begins in the last column
         if (fieldStartX == index && fieldStartY == y) {
-            fieldStartX = 0;
-            fieldStartY++;
+            fieldStartX = 0
+            fieldStartY++
         }
-        return result.toString().toCharArray();
+        return result.toString().toCharArray()
     }
 
-    private Field createField(final byte startCode, final int startx, final int starty, final int endx, final int endy,
-            final int color, final int extHighlight) {
+    private Field createField(
+            final byte startCode,
+            final int startx,
+            final int starty,
+            final int endx,
+            final int endy,
+            final int color,
+            final int extHighlight
+    ) {
         if ((startCode & Field.ATTR_PROTECTED) == 0) {
-            return new InputField(this, startCode, startx, starty, endx, endy, color, extHighlight);
-        } else {
-            return new Field(this, startCode, startx, starty, endx, endy, color, extHighlight);
+            return new InputField(this, startCode, startx, starty, endx, endy, color, extHighlight)
         }
+
+        new Field(
+            this,
+            startCode,
+            startx,
+            starty,
+            endx,
+            endy,
+            color,
+            extHighlight
+        )
     }
 
 }

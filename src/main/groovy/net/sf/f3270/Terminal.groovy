@@ -1,13 +1,14 @@
 package net.sf.f3270
 
+import groovy.util.logging.Slf4j
 import org.h3270.host.Field
 import org.h3270.host.InputField
 import org.h3270.host.S3270
-import org.h3270.host.Screen
 import org.h3270.host.S3270.TerminalMode
 import org.h3270.host.S3270.TerminalType
 import org.h3270.render.TextRenderer
 
+@Slf4j
 class Terminal {
     private static final int SCREEN_WIDTH_IN_CHARS = 80
 
@@ -23,7 +24,35 @@ class Terminal {
     private static final char MAINFRAME_BLANK_CHAR = '\u0000'
     private static final char SINGLE_SPACE = ' '
 
-    Terminal(final String s3270Path, final String hostname, final int port, final TerminalType type,final TerminalMode mode, final boolean showTerminalWindow) {
+    Terminal(Map args = [:]){
+        this.s3270Path = "s3270/cygwin/s3270.exe"
+        this.hostname = args.hostname
+        this.port = args.port ?: 23
+        this.type = args.type ?: TerminalType.TYPE_3279
+        this.mode = args.mode ?: TerminalMode.MODE_80_24
+        this.showTerminalWindow = args.containsKey("showTerminalWindow") ? args.showTerminalWindow : true
+
+        addDefaultObservers()
+    }
+
+    Terminal(
+        final String s3270Path,
+        final String hostname,
+        final int port,
+        final TerminalType type,
+        final TerminalMode mode,
+        final boolean showTerminalWindow
+    ) {
+        log.debug """
+New terminal
+s3270Path: ${s3270Path}
+hostname: ${hostname}
+port: ${port}
+type: ${type}
+mode: ${mode}
+showTerminalWindow: ${showTerminalWindow}
+"""
+
         this.s3270Path = s3270Path
         this.hostname = hostname
         this.port = port
@@ -44,21 +73,21 @@ class Terminal {
     void addObserver(TerminalObserver observer) {
         observers.add(observer)
     }
-    
+/*
     void removeObserver(TerminalObserver observer) {
-        observers.remove(observer);
+        observers.remove(observer)
     }
-
+*/
     Terminal connect() {
         s3270 = new S3270(s3270Path, hostname, port, type, mode)
-        updateScreen();
+        updateScreen()
         for (TerminalObserver observer : observers) {
-            observer.connect(s3270);
+            observer.connect(s3270)
         }
         commandIssued("connect", null)
         return this
     }
-
+/*
     void disconnect() {
         assertConnected()
         s3270.disconnect()
@@ -66,7 +95,7 @@ class Terminal {
             observer.disconnect()
         }
     }
-
+*/
     private void assertConnected() {
         if (s3270 == null) {
             throw new RuntimeException("not connected")
@@ -88,35 +117,35 @@ class Terminal {
 
     String getScreenText() {
         assertConnected()
-        new TextRenderer().render(s3270.getScreen())
+        new TextRenderer().render(s3270.screen)
     }
-
+/*
     String getLine(final int line) {
-        assertConnected();
-        final Screen screen = s3270.getScreen();
-        final StringBuilder sb = new StringBuilder();
+        assertConnected()
+        final Screen screen = s3270.getScreen()
+        final StringBuilder sb = new StringBuilder()
         for (int col = 0; col < screen.getWidth(); col++) {
-            sb.append(replaceNull(screen.charAt(col, line)));
+            sb.append(replaceNull(screen.charAt(col, line)))
         }
         sb.toString()
     }
 
     int getWidth() {
-        s3270.getScreen().getWidth()
+        s3270.screen.width
     }
     
     int getHeight() {
-        s3270.getScreen().getHeight()
+        s3270.screen.height
     }
-
+*/
     void enter() {
-        assertConnected();
-        s3270.submitScreen();
-        s3270.enter();
-        updateScreen();
-        commandIssued("enter", null);
+        assertConnected()
+        s3270.submitScreen()
+        s3270.enter()
+        updateScreen()
+        commandIssued("enter", null)
     }
-
+/*
     void pf(final int n) {
         assertConnected()
         s3270.submitScreen()
@@ -152,7 +181,7 @@ class Terminal {
         updateScreen();
         commandIssued("clearScreen", null)
     }
-
+*/
     /**
      * @deprecated Use {@link @link Terminal#write (FieldIdentifier)} instead
      */
@@ -195,8 +224,12 @@ class Terminal {
 
     void write(FieldIdentifier fieldIdentifier, String value) {
         assertConnected()
-        getInputField(fieldIdentifier).setValue(value)
+        getInputField(fieldIdentifier).value = value
         commandIssued("write", null, buildParameters(fieldIdentifier, value))
+    }
+
+    void write(Integer fieldId, String value){
+        write(new FieldIdentifier(fieldId: fieldId, skip: 0), value)
     }
 
     /**
@@ -315,8 +348,7 @@ class Terminal {
 
     Field getField(FieldIdentifier fieldIdentifier) {
         assertConnected()
-        List<Field> fields = s3270.getScreen().getFields()
-        fieldIdentifier.find(fields)
+        fieldIdentifier.find(s3270.screen.fields)
     }
 
     /**
@@ -325,13 +357,13 @@ class Terminal {
     // TODO : delete method (deprecated on 2010-04-15)
     int getFieldIndex(final String label, final int matchNumber, final MatchMode matchMode) {
         assertConnected()
-        new FieldIdentifier(label, matchNumber, matchMode).getFieldIndexOfLabel(s3270.getScreen().getFields())
+        new FieldIdentifier(label, matchNumber, matchMode).getFieldIndexOfLabel(s3270.screen.fields)
     }
     
     boolean screenHasLabel(FieldIdentifier fieldIdentifier) {
-        fieldIdentifier.getFieldIndexOfLabel(s3270.getScreen().getFields()) != -1
+        fieldIdentifier.getFieldIndexOfLabel(s3270.screen.fields) != -1
     }
-
+/*
     void printFields() {
         printFields(System.out)
     }
@@ -344,23 +376,23 @@ class Terminal {
             stream.println(String.format("%d=[%s]", i, value))
         }
     }
-
-    private static final String SCREEN_SEPARATOR = "+--------------------------------------------------------------------------------+";
-
+*/
+    private static final String SCREEN_SEPARATOR = "+--------------------------------------------------------------------------------+"
+/*
     void printScreen() {
-        printScreen(System.out);
+        printScreen(System.out)
     }
-
+*/
     void printScreen(PrintStream stream) {
-        assertConnected();
-        final String[] lines = getScreenText().split("\n");
-        final String blanks = "                                                                                ";
-        stream.println(SCREEN_SEPARATOR);
+        assertConnected()
+        final String[] lines = screenText.split("\n")
+        final String blanks = "                                                                                "
+        stream.println(SCREEN_SEPARATOR)
         for (String line : lines) {
-            final String fixedLine = (line + blanks).substring(0, SCREEN_WIDTH_IN_CHARS);
-            stream.println(String.format("|%s|", fixedLine));
+            final String fixedLine = (line + blanks).substring(0, SCREEN_WIDTH_IN_CHARS)
+            stream.println(String.format("|%s|", fixedLine))
         }
-        stream.println(SCREEN_SEPARATOR);
+        stream.println(SCREEN_SEPARATOR)
     }
 
 }

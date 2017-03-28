@@ -32,18 +32,26 @@ import java.util.regex.Pattern
  */
 class InputField extends Field {
 
-    private boolean isNumeric;
-    private boolean isFocused;
-    private boolean changed;
+    private boolean isNumeric
+    private boolean isFocused
+    private boolean changed
 
-    InputField(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,
-            final int endy, final int color, final int extHighlight) {
-        super(screen, fieldCode, startx, starty, endx, endy, color, extHighlight);
+    InputField(
+            final Screen screen,
+            final byte fieldCode,
+            final int startx,
+            final int starty,
+            final int endx,
+            final int endy,
+            final int color,
+            final int extHighlight
+    ) {
+        super(screen, fieldCode, startx, starty, endx, endy, color, extHighlight)
         if ((fieldCode & ATTR_NUMERIC) != 0) {
-            isNumeric = true;
+            isNumeric = true
         }
     }
-
+/*
     InputField(final Screen screen, final byte fieldCode, final int startx, final int starty, final int endx,final int endy) {
         this(screen, fieldCode, startx, starty, endx, endy, ATTR_COL_DEFAULT, ATTR_EH_DEFAULT);
     }
@@ -51,20 +59,19 @@ class InputField extends Field {
     boolean isNumeric() {
         this.isNumeric
     }
-
+*/
     void setFocused(final boolean flag) {
         this.isFocused = flag
     }
-
+/*
     boolean isFocused() {
         this.isFocused
     }
-
+*/
     boolean isChanged() {
         return this.changed
     }
-    
-    @Override
+
     boolean isWritable() {
         true
     }
@@ -74,23 +81,23 @@ class InputField extends Field {
      */
     void setValue(final String newValue) {
         if (this.isMultiline()) {
-            throw new RuntimeException("use setValue(int, String) for multiline field");
+            throw new RuntimeException("use setValue(int, String) for multiline field")
         }
-        if (this.value == null) {
+        if (this.value_ == null) {
             getValue()
         }
-        if (newValue != trim(this.value)) {
+        if (newValue != trim(this.value_)) {
             final int width = endx - startx + 1
             if (newValue.length() > width) {
-                this.value = newValue.substring(0, width)
+                this.value_ = newValue.substring(0, width)
             } else {
-                this.value = newValue
+                this.value_ = newValue
             }
             changed = true
         }
     }
 
-    private static final Pattern LINE_PATTERN = Pattern.compile(".*\n", Pattern.MULTILINE)
+    //private static final Pattern LINE_PATTERN = Pattern.compile(".*\n", Pattern.MULTILINE)
 
     /**
      * Sets the value of one of the lines in a multi-line field.
@@ -99,7 +106,7 @@ class InputField extends Field {
      *            the number of the line to be changed, starting at zero
      * @param newValue
      *            The new value for this line. It is not supposed to have a trailing newline.
-     */
+     *
     void setValue(final int lineNumber, final String newValue) {
         if (this.value == null) {
             getValue()
@@ -121,7 +128,7 @@ class InputField extends Field {
             this.value = val
             changed = true
         }
-    }
+    }*/
 
     private static final Pattern TRIM_PATTERN = Pattern.compile('^[\\x00 _]*(.*?)[\\x00 _]*$', 0)
 
@@ -130,9 +137,9 @@ class InputField extends Field {
      * underscores removed.
      */
     static String trim(final String value) {
-        final Matcher m = TRIM_PATTERN.matcher(value);
+        final Matcher m = TRIM_PATTERN.matcher(value)
         if (m.matches()) {
-            return m.group(1).replace((char) 0, ' ');
+            return m.group(1).replace(0 as char, ' ' as char)
         }
         value
     }

@@ -2,8 +2,6 @@ package net.sf.f3270.ipaustralia
 
 import net.sf.f3270.FieldIdentifier
 import net.sf.f3270.IntegrationTestBase
-import net.sf.f3270.Terminal
-
 import org.junit.Assert
 import org.junit.Test
 
@@ -41,8 +39,6 @@ class IpAustraliaTest extends IntegrationTestBase {
         disconnect()
     }
 
-    private void assertText(Terminal terminal, String text) {
-        Assert.assertTrue("screen doesn't contain " + text, terminal.getScreenText().contains(text))
-    }
+
 
 }

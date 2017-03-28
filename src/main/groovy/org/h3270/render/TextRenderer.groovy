@@ -71,15 +71,15 @@ class TextRenderer implements Renderer {
             })
         }
 
-        markFields(s, result, '{', '}', new FieldSelector() {
+        markFields(s, result, '{' as char, '}' as char, new FieldSelector() {
             boolean checkField(final Field f) {
                 f instanceof InputField
             }
         })
 
         for (int i = 0; i < result.length(); i++) {
-            if (result.charAt(i) == '\u0000') {
-                result.setCharAt(i, ' ')
+            if (result.charAt(i) == ('\u0000' as char)) {
+                result.setCharAt(i, ' ' as char)
             }
         }
         result.toString()

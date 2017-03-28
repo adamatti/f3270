@@ -92,6 +92,16 @@ class S3270 {
      */
     private ErrorReader errorReader = null
 
+    S3270(Map args = [:]){
+        this(
+            args.s3270Path ?: "s3270/cygwin/s3270.exe",
+            args.hostname,
+            args.port ?: 23,
+            args.type ?: TerminalType.TYPE_3279,
+            args.mode ?: TerminalMode.MODE_80_24
+        )
+    }
+
     /**
      * Constructs a new S3270 object. The s3270 subprocess (which does the communication with the host) is immediately
      * started and connected to the target host. If this fails, the constructor will throw an appropriate exception.
@@ -107,7 +117,13 @@ class S3270 {
      * @throws org.h3270.host.S3270Exception
      *             for any other error not matched by the above
      */
-    S3270(final String s3270Path, final String hostname, final int port, final TerminalType type, final TerminalMode mode) {
+    S3270(
+        final String s3270Path,
+        final String hostname,
+        final int port,
+        final TerminalType type,
+        final TerminalMode mode
+    ) {
 
         this.s3270Path = s3270Path
         this.hostname = hostname
@@ -121,7 +137,7 @@ class S3270 {
         final String commandLine = String.format("%s -model %s-%d %s:%d", s3270Path, type.getType(), mode.getMode(),hostname, port)
         try {
             logger.info("starting " + commandLine)
-            s3270 = Runtime.getRuntime().exec(commandLine)
+            s3270 = execute(commandLine)
 
             out = new PrintWriter(new OutputStreamWriter(s3270.getOutputStream(), "ISO-8859-1"))
             in_ = new BufferedReader(new InputStreamReader(s3270.getInputStream(), "ISO-8859-1"))
@@ -135,9 +151,13 @@ class S3270 {
     }
 
     private void checkS3270PathValid(String path) {
+        File file = new File(path)
+        assert file.exists()
+        logger.info "Exec ${path} -v"
         try {
-            Runtime.getRuntime().exec(path + " -v")
+            execute("${file.absolutePath} -v")
         } catch (Exception e) {
+            logger.error(e.message, e)
             throw new RuntimeException("could not find s3270 executable in the path")
         }
     }
@@ -147,11 +167,11 @@ class S3270 {
             throw new RuntimeException("not connected")
         }
     }
-
+/*
     String getS3270Path() {
         s3270Path
     }
-
+*/
     String getHostname() {
         hostname
     }
@@ -205,7 +225,7 @@ class S3270 {
             while (true) {
                 final String line = in_.readLine()
                 if (line == null) {
-                    checkS3270Process(); // will throw appropriate exception
+                    checkS3270Process() // will throw appropriate exception
                     // if we get here, it's a more obscure error
                     throw new RuntimeException("s3270 process not responding")
                 }
@@ -239,7 +259,7 @@ class S3270 {
         private String message = null
 
         void run() {
-            final BufferedReader err = new BufferedReader(new InputStreamReader(s3270.getErrorStream()));
+            final BufferedReader err = new BufferedReader(new InputStreamReader(s3270.getErrorStream()))
             try {
                 while (true) {
                     final String msg = err.readLine()
@@ -406,12 +426,18 @@ class S3270 {
                     final char ch = value.charAt(j)
                     if (ch == '\n') {
                         doCommand("newline")
-                    } else if (!Integer.toHexString(ch) == "0") {
-                        doCommand("key (0x" + Integer.toHexString(ch) + ")")
+                    } else if (toHexString(ch) != "0") {
+                        doCommand("key (0x" + toHexString(ch) + ")")
                     }
                 }
             }
         }
+    }
+
+    private String toHexString(char c){
+        String result = new String(c).bytes.encodeHex().toString()
+        logger.debug "toHex(${c}) = ${result}"
+        result
     }
 
     void submitUnformatted(final String data) {
@@ -507,5 +533,11 @@ class S3270 {
                 throw new RuntimeException("error invoking s3270 for key: " + key + ", exception: " + ex.getTargetException())
             }
         }
+    }
+
+    private Process execute(String command){
+        //command = "cmd /C \"${command}\""
+        logger.info "Execute ${command}"
+        Runtime.runtime.exec(command)
     }
 }

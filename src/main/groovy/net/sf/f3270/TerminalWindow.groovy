@@ -49,9 +49,10 @@ class TerminalWindow {
 	private final Font monospacedFont = new Font(Font.MONOSPACED, Font.PLAIN, 12)
 	private final Font sansFont = new Font(Font.SANS_SERIF, Font.PLAIN, 11)
 
-	private Color[] extendedColors = [Color.cyan, Color.blue,
-			Color.red, Color.pink, Color.green, Color.magenta, Color.yellow,
-			new Color(198, 198, 198) ]
+	private Color[] extendedColors = [
+		Color.cyan, Color.blue, Color.red, Color.pink, Color.green,
+		Color.magenta, Color.yellow, new Color(198, 198, 198)
+	]
 
 	private Map<String, Style> stylesFlyweight = new HashMap<String, Style>();
 
@@ -69,7 +70,7 @@ class TerminalWindow {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
 		initializeStyles()
-		createFrame(s3270.getHostname())
+		createFrame(s3270.hostname)
 	}
 
 	private void initializeStyles() {
@@ -90,9 +91,9 @@ class TerminalWindow {
 
 	private void updateTerminal() {
 		final DefaultStyledDocument doc = new DefaultStyledDocument()
-		for (Field f : s3270.getScreen().getFields()) {
+		for (Field f : s3270.screen.fields) {
 			final Style s = getStyle(f)
-			final String text = f.getText().replace('\u0000', ' ')
+			final String text = f.text.replace('\u0000', ' ')
 			if ((f instanceof InputField) && text.startsWith(" ")) {
 				appendText(doc, " ", styleBlack)
 				appendText(doc, text.substring(1), s)
@@ -103,12 +104,12 @@ class TerminalWindow {
 		SwingUtilities.invokeLater(new Runnable() {
 			void run() {
 				try {
-					boolean sizeChanged = updateTextPane3270Size();
+					boolean sizeChanged = updateTextPane3270Size()
 					if (sizeChanged) {
-						updateTabbedPaneSize();
-						frame.pack();
+						updateTabbedPaneSize()
+						frame.pack()
 					}
-					textPane3270.setDocument(doc);
+					textPane3270.document = doc
 				} catch (RuntimeException e) {
 					// do nothing
 				}
@@ -123,9 +124,9 @@ class TerminalWindow {
 		appendText(documentDebug, command, styleCommand)
 		appendText(documentDebug, "(", stylePunctuation)
 		for (int i = 0; i < parameters.length; i++) {
-			appendText(documentDebug, parameters[i].getName(), styleParamName)
+			appendText(documentDebug, parameters[i].name, styleParamName)
 			appendText(documentDebug, "=", stylePunctuation)
-			appendText(documentDebug, parameters[i].getValue(), styleParamValue)
+			appendText(documentDebug, parameters[i].value, styleParamValue)
 			if (i != parameters.length - 1) {
 				appendText(documentDebug, ", ", stylePunctuation)
 			}
@@ -138,13 +139,14 @@ class TerminalWindow {
 		SwingUtilities.invokeLater(new Runnable() {
 			void run() {
 				textPaneDebug.scrollRectToVisible(new Rectangle(0,
-						textPaneDebug.getHeight() * 2, 1, 1))
+						textPaneDebug.height * 2, 1, 1))
 			}
 		})
 	}
 
 	private void updateFieldsTable() {
-		((AbstractTableModel) fieldsTable.getModel()).fireTableDataChanged();
+		AbstractTableModel table = fieldsTable.model
+		table.fireTableDataChanged()
 	}
 
 	private Style getStyle(final Field f) {
@@ -158,15 +160,15 @@ class TerminalWindow {
 			}
 		}
 
-		final int i = (f.getExtendedColor() == 0) ? 0 : f.getExtendedColor() - 0xf0
+		final int i = (f.extendedColor == 0) ? 0 : f.extendedColor - 0xf0
 		Color foregroundColor = extendedColors[i]
 		Color backgroundColor = Color.black
-		if (f.getExtendedHighlight() == Field.ATTR_EH_REV_VIDEO) {
+		if (f.extendedHighlight == Field.ATTR_EH_REV_VIDEO) {
 			final Color tmp = backgroundColor
 			backgroundColor = foregroundColor
 			foregroundColor = tmp
 		}
-		boolean isUnderline = f.getExtendedHighlight() == Field.ATTR_EH_UNDERSCORE
+		boolean isUnderline = f.extendedHighlight == Field.ATTR_EH_UNDERSCORE
 
 		if (f.isIntensified()) {
 			foregroundColor = Color.white
@@ -183,7 +185,7 @@ class TerminalWindow {
 
 	private void appendText(final DefaultStyledDocument doc, final String text, final Style style) {
 		try {
-			doc.insertString(doc.getLength(), text, style)
+			doc.insertString(doc.length, text, style)
 		} catch (final BadLocationException e) {
 			throw new RuntimeException(e)
 		}
@@ -202,66 +204,71 @@ class TerminalWindow {
 
 		frame = new JFrame(title)
 
-		final Container contentPane = frame.getContentPane()
-		contentPane.setBackground(new Color(224, 224, 224))
+		final Container contentPane = frame.contentPane
+		contentPane.background = new Color(224, 224, 224)
 		contentPane.add(tabbedPane, BorderLayout.NORTH)
 		contentPane.add(debugPanel, BorderLayout.CENTER)
 
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-		frame.setResizable(false)
+		frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+		frame.resizable = false
 		frame.pack()
-		frame.setVisible(true)
+		frame.visible = true
 	}
 
 	private void updateTabbedPaneSize() {
-		tabbedPane.setPreferredSize(new Dimension((int) textPane3270
-				.getPreferredSize().getWidth() + 40, (int) textPane3270
-				.getPreferredSize().getHeight() + 40))
+		tabbedPane.setPreferredSize(
+			new Dimension(
+				(int) textPane3270.preferredSize.width + 40,
+				(int) textPane3270.preferredSize.height + 40
+			)
+		)
 	}
 
 	private JPanel buildDebugPanel(final Font monospacedFont, final Font sansFont) {
 		final JScrollPane textPaneDebugScroller = buildTextPaneDebug()
 
 		documentDebug = new DefaultStyledDocument()
-		textPaneDebug.setDocument(documentDebug)
+		textPaneDebug.document = documentDebug
 
 		final JPanel debugPanel = new JPanel()
-		final BoxLayout boxLayout = new BoxLayout(debugPanel,
-				BoxLayout.PAGE_AXIS)
-		debugPanel.setLayout(boxLayout)
-		debugPanel.setBackground(new Color(224, 224, 224))
-		debugPanel.setBorder(new EmptyBorder(3, 0, 0, 0))
+		final BoxLayout boxLayout = new BoxLayout(debugPanel, BoxLayout.PAGE_AXIS)
+		debugPanel.layout = boxLayout
+		debugPanel.background = new Color(224, 224, 224)
+		debugPanel.border = new EmptyBorder(3, 0, 0, 0)
 		debugPanel.add(textPaneDebugScroller)
 		debugPanel
 	}
 
 	private JScrollPane buildTextPaneDebug() {
 		textPaneDebug = createTextPane(sansFont, Color.white)
-		textPaneDebug.setAutoscrolls(true)
-		textPaneDebug.setBorder(new EmptyBorder(3, 3, 3, 3))
+		textPaneDebug.autoscrolls = true
+		textPaneDebug.border = new EmptyBorder(3, 3, 3, 3)
 		final FontMetrics fontMetricsSans = textPane3270.getFontMetrics(monospacedFont)
 		final JScrollPane textPaneDebugScroller = new JScrollPane(textPaneDebug)
-		textPaneDebugScroller.setPreferredSize(new Dimension(textPane3270.getWidth(), 3 + 10 * fontMetricsSans.getHeight()))
-		textPaneDebugScroller.setAlignmentX(JDialog.LEFT_ALIGNMENT)
-		textPaneDebugScroller.setBorder(new LineBorder(Color.gray))
-		textPaneDebugScroller.setAutoscrolls(true)
+		textPaneDebugScroller.preferredSize = new Dimension(textPane3270.width, 3 + 10 * fontMetricsSans.height)
+		textPaneDebugScroller.alignmentX = JDialog.LEFT_ALIGNMENT
+		textPaneDebugScroller.border = new LineBorder(Color.gray)
+		textPaneDebugScroller.autoscrolls = true
 		textPaneDebugScroller
 	}
 
 	private void buildTextPane3270() {
 		textPane3270 = createTextPane(monospacedFont, Color.black)
 		updateTextPane3270Size()
-		textPane3270.setAlignmentX(JDialog.LEFT_ALIGNMENT)
+		textPane3270.alignmentX = JDialog.LEFT_ALIGNMENT
 	}
 
 	private boolean updateTextPane3270Size() {
 		final FontMetrics fontMetricsMonospaced = textPane3270.getFontMetrics(monospacedFont);
-		int w = s3270.getScreen().getWidth()
-		int h = s3270.getScreen().getHeight()
+		int w = s3270.screen.width
+		int h = s3270.screen.height
 		if (w != currentWidth || h != currentHeight) {
-			textPane3270.setPreferredSize(new Dimension((w + 2)
-					* fontMetricsMonospaced.charWidth(' '), (h + 2)
-					* fontMetricsMonospaced.getHeight()))
+			textPane3270.setPreferredSize(
+				new Dimension(
+					(w + 2) * fontMetricsMonospaced.charWidth(' ' as char) as int,
+					(h + 2) * fontMetricsMonospaced.height as int
+				)
+			)
 			currentWidth = w
 			currentHeight = h
 			return true
@@ -279,7 +286,7 @@ class TerminalWindow {
 
 			int getRowCount() {
 				try {
-					return s3270.getScreen().getFields().size()
+					return s3270.screen.fields.size()
 				} catch (Exception e) {
 					return 0
 				}
@@ -296,7 +303,7 @@ class TerminalWindow {
 				}
 				Field f
 				try {
-					f = s3270.getScreen().getFields().get(rowIndex);
+					f = s3270.screen.fields.get(rowIndex)
 				} catch (Exception e) {
 					// nasty hack to handle some random not connected exceptions from s3270
 					return ""
@@ -318,9 +325,9 @@ class TerminalWindow {
 			}
 		})
 
-		fieldsTable.getColumnModel().getColumn(0).setPreferredWidth(25)
-		fieldsTable.getColumnModel().getColumn(1).setPreferredWidth(35)
-		fieldsTable.getColumnModel().getColumn(2).setPreferredWidth(600)
+		fieldsTable.columnModel.getColumn(0).setPreferredWidth(25)
+		fieldsTable.columnModel.getColumn(1).setPreferredWidth(35)
+		fieldsTable.columnModel.getColumn(2).setPreferredWidth(600)
 		// fieldsTable.setAutoCreateRowSorter(true);
 
 		final JScrollPane tableScroller = new JScrollPane(fieldsTable)
@@ -329,9 +336,9 @@ class TerminalWindow {
 
 	private static JTextPane createTextPane(final Font font, final Color color) {
 		final JTextPane textPane = new JTextPane()
-		textPane.setFont(font)
-		textPane.setBackground(color)
-		textPane.setEditable(false)
+		textPane.font = font
+		textPane.background = color
+		textPane.editable = false
 		textPane
 	}
 
@@ -343,17 +350,17 @@ class TerminalWindow {
 
 		Style style = stylesFlyweight.get(key)
 		if (style == null) {
-			style = StyleContext.getDefaultStyleContext().addStyle(null, null)
+			style = StyleContext.defaultStyleContext.addStyle(null, null)
 			StyleConstants.setForeground(style, foregroundColor)
 			StyleConstants.setBackground(style, backgrondColor)
 			StyleConstants.setItalic(style, isItalic)
 			stylesFlyweight.put(key, style)
 		}
 
-		return style
+		style
 	}
 
 	void close() {
-		frame.setVisible(false)
+		frame.visible = false
 	}
 }

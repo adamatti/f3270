@@ -102,15 +102,17 @@ abstract class AbstractScreen implements Screen {
         } catch (final Exception e) {
             logger.error("Error parsing substring", e)
         }
-        return s
+        s
     }
 
     String substring(final int y) {
-        return new String(buffer[y])
+        new String(buffer[y])
     }
 
+    //FIXME it isn't working with unmodifiableList
     List<Field> getFields() {
-        return Collections.unmodifiableList(fields)
+        //Collections.unmodifiableList(fields)
+        fields
     }
 
     InputField getInputFieldAt(final int x, final int y) {

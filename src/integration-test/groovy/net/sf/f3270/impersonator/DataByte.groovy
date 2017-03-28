@@ -15,7 +15,7 @@ class DataByte {
     }
 
     Direction getDirection() {
-        rdirection
+        direction
     }
 
     int getData() {
