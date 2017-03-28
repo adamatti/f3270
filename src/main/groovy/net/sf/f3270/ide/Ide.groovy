@@ -152,7 +152,7 @@ class Ide {
     }
 
     private static ListCellRenderer getCommandsCellRenderer() {
-        return new ListCellRenderer() {
+        new ListCellRenderer() {
             Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Command command = (Command) list.getModel().getElementAt(index)
                 command.toPanel(list, isSelected)
@@ -161,7 +161,7 @@ class Ide {
     }
 
     private static ListModel getListCommandsListModel() {
-        return new AbstractListModel() {
+        new AbstractListModel() {
             int getSize() {
                 20
             }
@@ -409,7 +409,7 @@ class Ide {
         if (textFieldLabel == null) {
             textFieldLabel = new JTextField()
         }
-        return textFieldLabel
+        textFieldLabel
     }
 
     private JComboBox getComboBoxMode() {

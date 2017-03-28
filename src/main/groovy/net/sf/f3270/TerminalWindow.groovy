@@ -309,9 +309,9 @@ class TerminalWindow {
 					return ""
 				}
 				if (columnIndex == 1) {
-					return ((f instanceof InputField) ? "in" : "out")
-							+ (((f instanceof InputField) && ((InputField) f)
-									.isChanged()) ? " *" : "")
+					boolean isInputField = f instanceof InputField
+					return (isInputField ? "in" : "out")
+							+ ((isInputField && f.isChanged()) ? " *" : "")
 				}
 				if (columnIndex == 2) {
 					return "[" + f.getValue().replace('\u0000', ' ') + "]"

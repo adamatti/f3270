@@ -68,6 +68,6 @@ class ScreenCharSequence {
         if (x == width) {
             return null
         }
-        return screen.getInputFieldAt(x, y)
+        screen.getInputFieldAt(x, y)
     }
 }

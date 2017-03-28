@@ -49,7 +49,7 @@ class HostUnreachableException extends S3270Exception {
      * Returns the reason why the host could not be reached, as reported by s3270.
      */
     String getReason() {
-        return reason
+        reason
     }
 
 }

@@ -124,7 +124,7 @@ class TN3270Impersonator {
 
     private List<String> readLines(String dataFilePath) {
         try {
-            return IOUtils.readLines(TN3270Impersonator.class.getClassLoader().getResourceAsStream(dataFilePath))
+            return IOUtils.readLines(TN3270Impersonator.class.classLoader.getResourceAsStream(dataFilePath))
         } catch (IOException e) {
             throw new RuntimeException(e)
         }

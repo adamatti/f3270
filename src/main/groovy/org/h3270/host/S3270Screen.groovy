@@ -266,7 +266,7 @@ class S3270Screen extends AbstractScreen {
             fieldStartX = 0
             fieldStartY++
         }
-        return result.toString().toCharArray()
+        result.toString().toCharArray()
     }
 
     private Field createField(

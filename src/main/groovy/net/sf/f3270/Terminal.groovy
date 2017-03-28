@@ -85,7 +85,7 @@ showTerminalWindow: ${showTerminalWindow}
             observer.connect(s3270)
         }
         commandIssued("connect", null)
-        return this
+        this
     }
 /*
     void disconnect() {

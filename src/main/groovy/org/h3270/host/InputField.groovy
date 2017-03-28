@@ -69,7 +69,7 @@ class InputField extends Field {
     }
 */
     boolean isChanged() {
-        return this.changed
+        this.changed
     }
 
     boolean isWritable() {

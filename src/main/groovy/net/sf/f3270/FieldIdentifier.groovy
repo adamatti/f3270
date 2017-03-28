@@ -70,7 +70,7 @@ class FieldIdentifier {
         if (matchMode != DEFAULT_MATCH_MODE) {
             parameters.add(new Parameter("matchMode", matchMode))
         }
-        return parameters
+        parameters
     }
 
     Field find(List<Field> fields) {
