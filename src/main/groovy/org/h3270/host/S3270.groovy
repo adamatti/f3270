@@ -506,7 +506,6 @@ class S3270 {
 
     private static final Pattern FUNCTION_KEY_PATTERN = Pattern.compile("p(f|a)([0-9]{1,2})")
 
-    @SuppressWarnings("unchecked")
     void doKey(final String key) {
         assertConnected()
         final Matcher m = FUNCTION_KEY_PATTERN.matcher(key)

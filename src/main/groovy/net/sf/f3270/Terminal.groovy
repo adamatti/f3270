@@ -81,9 +81,7 @@ showTerminalWindow: ${showTerminalWindow}
     Terminal connect() {
         s3270 = new S3270(s3270Path, hostname, port, type, mode)
         updateScreen()
-        for (TerminalObserver observer : observers) {
-            observer.connect(s3270)
-        }
+        observers.each {  it.connect(s3270) }
         commandIssued("connect", null)
         this
     }
