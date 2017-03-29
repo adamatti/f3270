@@ -136,7 +136,6 @@ class S3270 {
 
         final String commandLine = String.format("%s -model %s-%d %s:%d", s3270Path, type.getType(), mode.getMode(),hostname, port)
         try {
-            logger.info("starting " + commandLine)
             s3270 = execute(commandLine)
 
             out = new PrintWriter(new OutputStreamWriter(s3270.getOutputStream(), "ISO-8859-1"))
@@ -153,7 +152,6 @@ class S3270 {
     private void checkS3270PathValid(String path) {
         File file = new File(path)
         assert file.exists()
-        logger.info "Exec ${path} -v"
         try {
             execute("${file.absolutePath} -v")
         } catch (Exception e) {
@@ -536,7 +534,7 @@ class S3270 {
 
     private Process execute(String command){
         //command = "cmd /C \"${command}\""
-        logger.info "Execute ${command}"
+        logger.trace "Execute ${command}"
         Runtime.runtime.exec(command)
     }
 }

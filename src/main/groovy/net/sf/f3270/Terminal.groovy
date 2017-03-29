@@ -21,6 +21,7 @@ class Terminal {
     private final TerminalType type
     private final TerminalMode mode
 	private final boolean showTerminalWindow
+    private boolean dumpToConsole = false
     private static final char MAINFRAME_BLANK_CHAR = '\u0000'
     private static final char SINGLE_SPACE = ' '
 
@@ -31,6 +32,7 @@ class Terminal {
         this.type = args.type ?: TerminalType.TYPE_3279
         this.mode = args.mode ?: TerminalMode.MODE_80_24
         this.showTerminalWindow = args.containsKey("showTerminalWindow") ? args.showTerminalWindow : true
+        this.dumpToConsole = args.containsKey("dumpToConsole") ? args.dumpToConsole : true
 
         addDefaultObservers()
     }
@@ -64,7 +66,9 @@ showTerminalWindow: ${showTerminalWindow}
     }
 
     private void addDefaultObservers() {
-        addObserver(new TerminalScreenToConsoleObserver(this))
+        if (dumpToConsole) {
+            addObserver(new TerminalScreenToConsoleObserver(this))
+        }
         if (showTerminalWindow) {
         	addObserver(new TerminalWindowObserver())
 		}
@@ -85,7 +89,7 @@ showTerminalWindow: ${showTerminalWindow}
         commandIssued("connect", null)
         this
     }
-/*
+
     void disconnect() {
         assertConnected()
         s3270.disconnect()
@@ -93,7 +97,6 @@ showTerminalWindow: ${showTerminalWindow}
             observer.disconnect()
         }
     }
-*/
     private void assertConnected() {
         if (s3270 == null) {
             throw new RuntimeException("not connected")
